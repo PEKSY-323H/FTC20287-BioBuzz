@@ -14,25 +14,28 @@ import org.jetbrains.annotations.NotNull;
 @Configurable
 public final class Shooter extends SubsystemBase {
     // Shared velocity in encoder ticks per second; tune in Panels.
-    public static double SHOOT_VEL = 1560;
+    public static double SHOOT_VEL = 1430;
     // Opt in after tuning; false uses the Hub's existing velocity controller.
     public static boolean USE_PID = true;
     // Custom PID gains produce motor power from ticks/s error. Tune in Panels;
     // Hub PIDF tuner coefficients are incompatible. Zeros leave the motor off.
-    public static double VELOCITY_P = 0.01;
-    public static double VELOCITY_I = 0.008;
+    public static double VELOCITY_P = 0.00187;
+    public static double VELOCITY_I = 0.0084;
     public static double VELOCITY_D = 0;
     // Feedforward adds VELOCITY_F * target ticks/s to the PID power. Start near
     // 1 / (full-power ticks/s), e.g. 1 / 2800 ≈ 0.00036, then lower I.
-    public static boolean USE_F = false;
-    public static double VELOCITY_F = 0;
+    public static boolean USE_F = true;
+    public static double VELOCITY_F = 0.00008;
     // Flag the encoders when they disagree by more than this fraction of the
     // faster reading; below the minimum speed the ratio is too noisy to judge.
     public static double ENCODER_MISMATCH_RATIO = 0.2;
     public static double ENCODER_CHECK_MIN_VEL = 300;
+    // isAtSpeed() passes when the measured speed is within this many ticks/s of the target.
+    public static double AT_SPEED_TOLERANCE = 60;
     private final DcMotorEx shooterLeft, shooterRight;
     private final ElapsedTime loopTimer = new ElapsedTime();
     private double commandedVel;
+    private double measuredVel;
     private double integral;
     private double previousError;
     private boolean hasPreviousError;
@@ -86,7 +89,7 @@ public final class Shooter extends SubsystemBase {
         if (commandedVel == 0.0) {
             return;
         }
-        double measuredVel = measureVelocity();
+        measuredVel = measureVelocity();
         if (!usingPid) {
             shooterLeft.setVelocity(commandedVel);
             shooterRight.setVelocity(commandedVel);
@@ -135,6 +138,7 @@ public final class Shooter extends SubsystemBase {
             shooterRight.setVelocity(0.0);
         }
         commandedVel = 0.0;
+        measuredVel = 0.0;
         encoderMismatch = false;
         resetController();
     }
@@ -185,6 +189,12 @@ public final class Shooter extends SubsystemBase {
     /** Requested velocity in ticks/s, not an RPM or motion measurement. */
     public double getCommandedVel() {
         return commandedVel;
+    }
+
+    /** True once the flywheel, measured in the last periodic(), is near a nonzero target. */
+    public boolean isAtSpeed() {
+        return commandedVel != 0.0
+                && Math.abs(commandedVel - measuredVel) <= AT_SPEED_TOLERANCE;
     }
 
     /** True while the two shooter encoders disagree; check the wiring. */

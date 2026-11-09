@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 @Configurable
 public final class Shooter extends SubsystemBase {
     // Shared velocity in encoder ticks per second; tune in Panels.
-    public static double SHOOT_VEL = 1430;
+    public static double SHOOT_VEL = 1420;
     // Opt in after tuning; false uses the Hub's existing velocity controller.
     public static boolean USE_PID = true;
     // Custom PID gains produce motor power from ticks/s error. Tune in Panels;

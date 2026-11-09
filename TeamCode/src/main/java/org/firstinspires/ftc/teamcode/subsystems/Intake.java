@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @Configurable
 public final class Intake extends SubsystemBase {
     // Shared commanded power, limited to [-1, 1] by setPower(); tune in Panels.
-    public static double INTAKE_POWER = 1.0;
+    public static double INTAKE_POWER = 0.5;
     private final DcMotorEx intake;
     private double commandedPower;
 

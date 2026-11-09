@@ -32,6 +32,7 @@ public final class Shooter extends SubsystemBase {
     public static double ENCODER_CHECK_MIN_VEL = 300;
     // isAtSpeed() passes when the measured speed is within this many ticks/s of the target.
     public static double AT_SPEED_TOLERANCE = 60;
+    public static double READY_TO_SHOOT_TOLERANCE = 60;
     private final DcMotorEx shooterLeft, shooterRight;
     private final ElapsedTime loopTimer = new ElapsedTime();
     private double commandedVel;
@@ -195,6 +196,11 @@ public final class Shooter extends SubsystemBase {
     public boolean isAtSpeed() {
         return commandedVel != 0.0
                 && Math.abs(commandedVel - measuredVel) <= AT_SPEED_TOLERANCE;
+    }
+
+    /** True when the last periodic() measurement strictly exceeds a positive target. */
+    public boolean isReadyToShoot() {
+        return commandedVel > 0.0 && measuredVel > commandedVel - READY_TO_SHOOT_TOLERANCE;
     }
 
     /** True while the two shooter encoders disagree; check the wiring. */

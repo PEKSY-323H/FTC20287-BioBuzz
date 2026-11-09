@@ -8,6 +8,7 @@ import com.seattlesolvers.solverslib.command.CommandScheduler;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadConfig;
+import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
@@ -17,6 +18,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
     private Drive drive;
     private Shooter shooter;
     private Intake intake;
+    private Gate gate;
     private GamepadConfig controls;
 
     @Override
@@ -25,6 +27,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         drive = new Drive(hardwareMap);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
+        gate = new Gate(hardwareMap);
         controls = new GamepadConfig(gamepad1);
         drive.setDefaultCommand(createDriveCommand(drive, controls));
     }
@@ -62,8 +65,16 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
 
         if (controls.isIntakeHeld()) {
             intake.runIntake();
+        } else if (controls.isOuttakeHeld()) {
+            intake.runOuttake();
         } else {
             intake.stop();
+        }
+
+        if (controls.isIntakeHeld() && shooter.isReadyToShoot()) {
+            gate.open();
+        } else {
+            gate.close();
         }
 
         addDriveTelemetry();
@@ -75,6 +86,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         telemetry.addData("Shooter Encoder Mismatch", shooter.isEncoderMismatch());
         telemetry.addData("Intake Power Command", intake.getCommandedPower());
         telemetry.addData("Intake Power Actual", intake.getPow());
+        telemetry.addData("Gate Position Command", gate.getPosition());
         telemetry.update();
     }
 
@@ -89,5 +101,6 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         drive.stop();
         shooter.stop();
         intake.stop();
+        gate.close();
     }
 }

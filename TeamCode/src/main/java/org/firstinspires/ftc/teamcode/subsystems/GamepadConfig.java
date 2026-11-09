@@ -31,6 +31,10 @@ public final class GamepadConfig {
         return gamepad.left_bumper;
     }
 
+    public boolean isOuttakeHeld() {
+        return gamepad.left_trigger_pressed;
+    }
+
     public boolean isShootHeld() {
         return gamepad.right_bumper;
     }

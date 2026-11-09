@@ -26,8 +26,12 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation('org.solverslib:core:0.3.4') {
+    implementation('org.solverslib:core:0.3.6') {
         // The app supplies FTC SDK 12.0; do not import SolversLib's strict SDK 11.1 constraints.
+        exclude group: 'org.firstinspires.ftc'
+    }
+    // SolversLib commands for Pedro Pathing 3 (depends on com.pedropathing:revhub:3.0.0).
+    implementation('org.solverslib:pedroPathing:0.3.6') {
         exclude group: 'org.firstinspires.ftc'
     }
 }

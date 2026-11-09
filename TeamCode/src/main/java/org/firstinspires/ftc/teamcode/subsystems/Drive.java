@@ -27,7 +27,7 @@ public final class Drive extends SubsystemBase {
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         backLeft = hMap.get(DcMotorEx.class, "backLeft");
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

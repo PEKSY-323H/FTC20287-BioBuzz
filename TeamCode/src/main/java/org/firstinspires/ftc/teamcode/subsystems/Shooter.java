@@ -19,13 +19,13 @@ public final class Shooter extends SubsystemBase {
     public static boolean USE_PID = true;
     // Custom PID gains produce motor power from ticks/s error. Tune in Panels;
     // Hub PIDF tuner coefficients are incompatible. Zeros leave the motor off.
-    public static double VELOCITY_P = 0.00187;
-    public static double VELOCITY_I = 0.0084;
+    public static double VELOCITY_P = 0.004;
+    public static double VELOCITY_I = 0;
     public static double VELOCITY_D = 0;
     // Feedforward adds VELOCITY_F * target ticks/s to the PID power. Start near
     // 1 / (full-power ticks/s), e.g. 1 / 2800 ≈ 0.00036, then lower I.
     public static boolean USE_F = true;
-    public static double VELOCITY_F = 0.00008;
+    public static double VELOCITY_F = 0.00036;
     // Flag the encoders when they disagree by more than this fraction of the
     // faster reading; below the minimum speed the ratio is too noisy to judge.
     public static double ENCODER_MISMATCH_RATIO = 0.2;

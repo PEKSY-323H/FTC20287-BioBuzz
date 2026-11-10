@@ -106,5 +106,14 @@ public final class FieldCentricDrive extends BaseDriveTeleOp {
         telemetry.addData("OctoQuad", localizer.getStatus());
         telemetry.addData("Heading from forward (deg)", Math.toDegrees(localizer.getHeadingRadians()));
         telemetry.addData("Bad CRC packets", localizer.getBadCrcPackets());
+        // Position counts from this OpMode's INIT, not from the field origin.
+        telemetry.addData("OctoQuad packet valid", localizer.isValid());
+        telemetry.addData("OctoQuad x (in)", localizer.getXInches());
+        telemetry.addData("OctoQuad y (in)", localizer.getYInches());
+        telemetry.addData("OctoQuad heading (deg)", Math.toDegrees(localizer.getRawHeadingRadians()));
+        telemetry.addData("OctoQuad x velocity (in/s)", localizer.getXVelocityInches());
+        telemetry.addData("OctoQuad y velocity (in/s)", localizer.getYVelocityInches());
+        telemetry.addData("OctoQuad rotation (deg/s)",
+                Math.toDegrees(localizer.getHeadingVelocityRadians()));
     }
 }

@@ -1,0 +1,670 @@
+{
+  "version": "2.0.0",
+  "timestamp": "2026-11-10T11:06:27.081Z",
+  "startPoint": {
+    "x": 53.31899514296188,
+    "y": 5.343308971774198,
+    "locked": false,
+    "headingDeg": 90
+  },
+  "lines": [
+    {
+      "kind": "atomic",
+      "id": "line-mwaho37k-45z67m",
+      "endPoint": {
+        "x": 58.69640346082721,
+        "y": 17.430167969122948
+      },
+      "controlPoints": [],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 270,
+        "endDeg": 270,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      },
+      "color": "#f28e2b",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "line-mwa1zn50-mjzsk1",
+      "color": "#ffc516",
+      "name": "Path 1",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 18.692050609420818,
+        "y": 6.458697993035192
+      },
+      "controlPoints": [
+        {
+          "x": 38.8918129391299,
+          "y": 31.82923329820381
+        }
+      ],
+      "heading": {
+        "type": "linear",
+        "startDeg": 270,
+        "endDeg": 180,
+        "degrees": 0,
+        "reverse": false,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2agfb-tm3f9n",
+      "color": "#59a14f",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 5.549448128133578,
+        "y": 6.464975468345835
+      },
+      "controlPoints": [],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 180,
+        "endDeg": 180,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2disu-kxtga7",
+      "color": "#b07aa1",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 58.27726552636097,
+        "y": 17.10743224229511
+      },
+      "controlPoints": [
+        {
+          "x": 38.561780648059134,
+          "y": 32.09543865595424
+        }
+      ],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 180,
+        "endDeg": 270,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa23k93-qqbkhz",
+      "color": "#76b7b2",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 14.037658178608538,
+        "y": 46.31537494610749
+      },
+      "controlPoints": [
+        {
+          "x": 38.976706043096485,
+          "y": 40.911799878839965
+        }
+      ],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 270,
+        "endDeg": 180,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2gznq-tg1l24",
+      "color": "#f28e2b",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 5.859568147940406,
+        "y": 46.807751694541466
+      },
+      "controlPoints": [],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 180,
+        "endDeg": 180,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2hqvc-8xw9go",
+      "color": "#76b7b2",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 19.841551473411943,
+        "y": 46.53280710087966
+      },
+      "controlPoints": [],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 180,
+        "endDeg": 180,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2cdtv-13btd7",
+      "color": "#e15759",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 58.62117972136425,
+        "y": 124.33271856048819
+      },
+      "controlPoints": [
+        {
+          "x": 20.211563543716984,
+          "y": 114.051693206664
+        }
+      ],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 180,
+        "endDeg": 90,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2oa57-q9a1a7",
+      "color": "#4e79a7",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 47.1239594332341,
+        "y": 134.08881238580773,
+        "locked": false
+      },
+      "controlPoints": [
+        {
+          "x": 45.53673749290278,
+          "y": 117.72468947930344
+        }
+      ],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 90,
+        "endDeg": 90,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2q08d-6916ba",
+      "color": "#59a14f",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 58.6531415376998,
+        "y": 124.36366752156
+      },
+      "controlPoints": [
+        {
+          "x": 45.29874083129078,
+          "y": 117.51036825770295
+        }
+      ],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 90,
+        "endDeg": 90,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "line-mwa2s8di-jgmzoa",
+      "color": "#9c755f",
+      "name": "",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 8.174962871504432,
+        "y": 108.98255576880369
+      },
+      "controlPoints": [],
+      "heading": {
+        "type": "linear",
+        "reverse": true,
+        "degrees": 0,
+        "startDeg": 90,
+        "endDeg": 0,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "shapes": [
+    {
+      "id": "biobuzz-red-hive",
+      "name": "Red HIVE",
+      "vertices": [
+        {
+          "x": 46,
+          "y": 50
+        },
+        {
+          "x": 48.6,
+          "y": 50
+        },
+        {
+          "x": 48.6,
+          "y": 91.4
+        },
+        {
+          "x": 46,
+          "y": 91.4
+        }
+      ],
+      "color": "#dc2626",
+      "fillColor": "#ff6b6b"
+    },
+    {
+      "id": "biobuzz-blue-hive",
+      "name": "Blue HIVE",
+      "vertices": [
+        {
+          "x": 96.5,
+          "y": 91.4
+        },
+        {
+          "x": 93.9,
+          "y": 91.4
+        },
+        {
+          "x": 93.9,
+          "y": 50
+        },
+        {
+          "x": 96.5,
+          "y": 50
+        }
+      ],
+      "color": "#2563eb",
+      "fillColor": "#60a5fa"
+    },
+    {
+      "id": "biobuzz-flower-top",
+      "name": "Scoring-Side FLOWER",
+      "vertices": [
+        {
+          "x": 43.4,
+          "y": 141.5
+        },
+        {
+          "x": 50.1,
+          "y": 141.5
+        },
+        {
+          "x": 50.1,
+          "y": 139.4
+        },
+        {
+          "x": 46.75,
+          "y": 137.7
+        },
+        {
+          "x": 43.4,
+          "y": 139.4
+        }
+      ],
+      "color": "#dc2626",
+      "fillColor": "#ff6b6b"
+    },
+    {
+      "id": "biobuzz-flower-right",
+      "name": "Blue Alliance FLOWER",
+      "vertices": [
+        {
+          "x": 141.5,
+          "y": 98.1
+        },
+        {
+          "x": 139.4,
+          "y": 98.1
+        },
+        {
+          "x": 137.7,
+          "y": 94.75
+        },
+        {
+          "x": 139.4,
+          "y": 91.4
+        },
+        {
+          "x": 141.5,
+          "y": 91.4
+        }
+      ],
+      "color": "#2563eb",
+      "fillColor": "#60a5fa"
+    },
+    {
+      "id": "biobuzz-flower-bottom",
+      "name": "Audience-Side FLOWER",
+      "vertices": [
+        {
+          "x": 91.15,
+          "y": 0
+        },
+        {
+          "x": 97.8,
+          "y": 0
+        },
+        {
+          "x": 97.8,
+          "y": 2.1
+        },
+        {
+          "x": 94.5,
+          "y": 3.8
+        },
+        {
+          "x": 91.15,
+          "y": 2.1
+        }
+      ],
+      "color": "#2563eb",
+      "fillColor": "#60a5fa"
+    },
+    {
+      "id": "biobuzz-flower-left",
+      "name": "Red Alliance FLOWER",
+      "vertices": [
+        {
+          "x": 0,
+          "y": 50.35
+        },
+        {
+          "x": 2.1,
+          "y": 50.35
+        },
+        {
+          "x": 3.8,
+          "y": 47
+        },
+        {
+          "x": 2.1,
+          "y": 43.65
+        },
+        {
+          "x": 0,
+          "y": 43.65
+        }
+      ],
+      "color": "#dc2626",
+      "fillColor": "#ff6b6b"
+    }
+  ],
+  "sequence": [
+    {
+      "kind": "path",
+      "lineId": "line-mwaho37k-45z67m"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa1zn50-mjzsk1"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2agfb-tm3f9n"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2disu-kxtga7"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa23k93-qqbkhz"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2gznq-tg1l24"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2hqvc-8xw9go"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2cdtv-13btd7"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2oa57-q9a1a7"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2q08d-6916ba"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-mwa2s8di-jgmzoa"
+    }
+  ],
+  "fieldPoints": [],
+  "robot": {
+    "forwardVelocity": 75,
+    "strafeVelocity": 65,
+    "aVelocity": 3.141592653589793,
+    "kFriction": 0.1,
+    "rLength": 11.024,
+    "rWidth": 13.19,
+    "safetyMargin": 1,
+    "maxAcceleration": 30,
+    "maxDeceleration": 30
+  },
+  "activePaths": []
+}

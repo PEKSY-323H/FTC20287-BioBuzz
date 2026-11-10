@@ -99,6 +99,37 @@ public final class Localizer extends SubsystemBase {
         return String.valueOf(data.localizerStatus);
     }
 
+    // The values below come straight from the last packet, valid or not: check isValid().
+    // Position is measured from where the OctoQuad was last reset (INIT of this OpMode) and
+    // uses whatever pod settings the device holds; this class does not write them.
+
+    private static final double MM_PER_INCH = 25.4;
+
+    /** Device x position in inches since the last reset. */
+    public double getXInches() {
+        return data.posX_mm / MM_PER_INCH;
+    }
+
+    /** Device y position in inches since the last reset. */
+    public double getYInches() {
+        return data.posY_mm / MM_PER_INCH;
+    }
+
+    /** Device x velocity in inches per second. */
+    public double getXVelocityInches() {
+        return data.velX_mmS / MM_PER_INCH;
+    }
+
+    /** Device y velocity in inches per second. */
+    public double getYVelocityInches() {
+        return data.velY_mmS / MM_PER_INCH;
+    }
+
+    /** Rotation rate in radians per second, CCW-positive. */
+    public double getHeadingVelocityRadians() {
+        return data.velHeading_radS;
+    }
+
     public int getBadCrcPackets() {
         return badCrcPackets;
     }

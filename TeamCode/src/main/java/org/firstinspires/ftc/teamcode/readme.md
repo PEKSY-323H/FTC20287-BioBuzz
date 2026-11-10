@@ -18,7 +18,7 @@ Compiling proves the code builds. It does not prove deployment, sensor calibrati
 
 Motors `frontLeft`, `frontRight`, `backLeft`, `backRight`, `shooterLeft`, `shooterRight`, `intake`; servo `gate`; OctoQuad MK2 `octoquad` (type OctoQuadFTC).
 
-The drive motor names and directions live in one place, the constants at the top of `Drive`. `pedro/Constants` reads the same constants, so the TeleOps and the Pedro follower always agree. Positive power on every wheel must roll the robot forward.
+The drive motor names and directions live in one place, the constants at the top of `Drive`. `pedro/Constants` reads the same constants, so the TeleOps and the Pedro follower always agree. Positive power on every wheel must roll the robot forward. In the TeleOps each wheel is velocity-controlled from its motor encoder: full input is `Drive.MAX_VELOCITY` (2000 ticks/s), so the four wheels match even though their top speeds differ. This needs all four drive motor encoder cables plugged in, and it does not apply to the Pedro follower, which sends power directly.
 
 ## Controls (gamepad 1)
 

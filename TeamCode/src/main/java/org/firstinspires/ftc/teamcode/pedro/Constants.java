@@ -52,27 +52,7 @@ public final class Constants {
      * (see pedro/Tuning) measures every TODO below and prints a replacement for this block;
      * TEST - OctoQuad shows which port each pod is on.
      */
-    public static final OctoQuadConfig localizerConfig = new OctoQuadConfig(c -> {
-        c.name.set("octoquad");
-        // TODO: confirm ports with TEST - OctoQuad (push forward → X pod changes).
-        c.xPodPort.set(0);
-        c.yPodPort.set(1);
-        // TODO: flip so pushing forward raises x and pushing left raises y.
-        c.xPodDirection.set(OctoQuad.EncoderDirection.FORWARD);
-        c.yPodDirection.set(OctoQuad.EncoderDirection.FORWARD);
-        // TODO: measure each pod's offset from the rotation center (sign convention per the
-        // Pedro OctoQuad docs). Check by turning in place: x/y must barely move; if they
-        // trace a circle, flip the sign of the offending offset.
-        c.offsetUnits.set(DistanceUnit.INCH);
-        c.xPodOffset.set(0.0);
-        c.yPodOffset.set(0.0);
-        // TODO: goBILDA 4-bar pod = 19.894 ticks/mm; swingarm pod = 13.263 ticks/mm.
-        c.encoderResolutionUnit.set(DistanceUnit.MM);
-        c.ticksPerUnit.set(19.89436789);
-        // TODO: spin 10 turns, set to measuredDegrees / 3600.
-        c.headingScalar.set(1.0);
-        c.globalDistanceUnit.set(DistanceUnit.INCH);
-    });
+
 
     /**
      * TODO: every number here is Pedro's documentation sample, not tuned for this robot.
@@ -80,24 +60,64 @@ public final class Constants {
      * (http://192.168.43.1:10158, registered in pedro/Tuning), after the localizer passes
      * the Odometry Test.
      */
-    public static final ForesightConfig foresightConfig = new ForesightConfig(c -> {
-        Controller primaryForward = Controller.proportional(0.3);
-        Controller secondaryForward = Controller.proportional(0.1);
-        Controller primaryLateral = Controller.proportional(0.3);
-        Controller secondaryLateral = Controller.proportional(0.1);
-        c.forwardTranslational.set(Controller.piecewise(secondaryForward).put(2.5, primaryForward));
-        c.strafeTranslational.set(Controller.piecewise(secondaryLateral).put(2.5, primaryLateral));
-        c.coast.set(Controller.proportionalFeedforward(0.010978350889324107));
-        c.brake.set(Controller.proportionalFeedforward(0.008731598255925491));
-        c.headingFeedback.set(Controller.proportional(5.258721785960744));
-        c.headingBrakeCoefficients.set(Vector2D.cartesian(0.05642143125655298, 0.0063829525363003695));
-        c.linearBrakeCoefficients.set(Matrix.diag(0.10605894992901523, 0.08719146175596092));
-        c.quadraticBrakeCoefficients.set(Matrix.diag(0.0014663966976606565, 0.0013837064502458813));
-        c.maxAchievableForwardVelocity.set(72.72923108818539);
-        c.maxAchievableStrafeVelocity.set(52.34323936525474);
-        c.naturalForwardDeceleration.set(85.01144677379789);
-        c.naturalStrafeDeceleration.set(104.49787535782846);
-    });
+//    public static ForesightConfig foresightConfig = new ForesightConfig(
+//            c -> {
+//                Controller primaryTranslationalForward = Controller.proportional(2.0242194874368624);
+//                Controller secondaryTranslationalForward = Controller.proportional(0.7478950124670608);
+//                Controller primaryTranslationalLateral = Controller.proportional(0.3076221684840604);
+//                Controller secondaryTranslationalLateral = Controller.proportional(0.11365817143913191);
+//
+//                c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
+//                c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
+//
+//                c.coast.set(Controller.proportionalFeedforward(0.015219045710296026));
+//                c.brake.set(Controller.proportionalFeedforward(0.012936188853751621));
+//
+//                c.headingFeedback.set(Controller.proportional(3.906548351477625));
+//                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.0036836358620452926, 0.012094332828020117));
+//
+//                c.linearBrakeCoefficients.set(Matrix.diag(0.3578701207632757, 0.0717797633823807));
+//                c.quadraticBrakeCoefficients.set(Matrix.diag(-0.0044984662384110205, 0.0014173572025533727));
+//
+//                c.maxAchievableForwardVelocity.set(76.55414985135995);
+//                c.maxAchievableStrafeVelocity.set(61.32722224017114);
+//                c.naturalForwardDeceleration.set(28.473939750554397);
+//                c.naturalStrafeDeceleration.set(56.77589090994222);
+//            }
+//    );
+    public static ForesightConfig foresightConfig = new ForesightConfig(
+            c -> {
+                // Hand-tuned: AutoTune gave 4.696 / 1.735 here, about 16 times the strafe gains
+                // below, and the robot shook in the Hold Test. 0.30 / 0.11 (equal to strafe)
+                // stopped that but still shook front-to-back while approaching a target, so
+                // forward now sits below strafe. Not yet re-tested on the robot.
+                Controller primaryTranslationalForward = Controller.proportional(0.20);
+                Controller secondaryTranslationalForward = Controller.proportional(0.07);
+                Controller primaryTranslationalLateral = Controller.proportional(0.2862067047360195);
+                Controller secondaryTranslationalLateral = Controller.proportional(0.10574572981596109);
+
+                c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
+                c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
+
+                c.coast.set(Controller.proportionalFeedforward(0.0204642745921879));
+                c.brake.set(Controller.proportionalFeedforward(0.017394633403359713));
+
+                c.headingFeedback.set(Controller.proportional(3.5491261388178916));
+                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.05954799785186256, 0.003778975715383811));
+
+                // Predicted stopping distance = linear * v + quadratic * v * |v| (forward, strafe).
+                // Linear terms hand-raised about 20 % from AutoTune's 0.2493 / 0.0653 so the
+                // robot starts slowing earlier; it was driving past the target and coming
+                // back. Not yet re-tested on the robot.
+                c.linearBrakeCoefficients.set(Matrix.diag(0.30, 0.078));
+                c.quadraticBrakeCoefficients.set(Matrix.diag(-0.0030620639876104147, 0.0014767345489988737));
+
+                c.maxAchievableForwardVelocity.set(83.4973538997374);
+                c.maxAchievableStrafeVelocity.set(66.749621026265);
+                c.naturalForwardDeceleration.set(38.359098479327784);
+                c.naturalStrafeDeceleration.set(68.29474265059757);
+            }
+    );
 
     /**
      * Builds the follower; named {@code create} as in the Pedro 3 docs. The OctoQuad
@@ -110,6 +130,20 @@ public final class Constants {
                 createDrivetrain(hardwareMap),
                 new Foresight(foresightConfig));
     }
+    public static OctoQuadConfig localizerConfig = new OctoQuadConfig(c -> {
+        c.name.set("octoquad");
+        c.xPodPort.set(1);
+        c.yPodPort.set(0);
+        c.ticksPerUnit.set(505.316944406);
+        c.xPodOffset.set(4.980314960629921);
+        c.yPodOffset.set(-1.062992125984252);
+        c.xPodDirection.set(OctoQuad.EncoderDirection.REVERSE);
+        c.yPodDirection.set(OctoQuad.EncoderDirection.FORWARD);
+        c.globalDistanceUnit.set(DistanceUnit.INCH);
+        c.offsetUnits.set(DistanceUnit.INCH);
+        c.i2cRecoveryMode.set(OctoQuad.I2cRecoveryMode.MODE_1_PERIPH_RST_ON_FRAME_ERR);
+        c.headingScalar.set(1.0117874673938325);
+    });
 
     /** The configured localizer on its own; also what pedro/Tuning hands to the tuners. */
     public static OctoQuadLocalizer createLocalizer(HardwareMap hardwareMap) {

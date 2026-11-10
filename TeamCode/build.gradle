@@ -1,4 +1,19 @@
+// Sloth's Load plugin: adds the deploySloth / removeSlothRemote tasks for hot reload.
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+        maven {
+            url "https://repo.dairy.foundation/releases"
+        }
+    }
+    dependencies {
+        classpath "dev.frozenmilk:Load:0.3.2"
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'dev.frozenmilk.sinister.sloth.load'
 
 //
 // build.gradle in TeamCode
@@ -26,11 +41,15 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+    // Hot reload runtime. Panels 1.0.20 and Pedro tuning 1.0.3 already pull in exactly this
+    // version; keep the three in step.
+    implementation 'dev.frozenmilk.sinister:Sloth:0.3.2'
     implementation('org.solverslib:core:0.3.6') {
         // The app supplies FTC SDK 12.0; do not import SolversLib's strict SDK 11.1 constraints.
         exclude group: 'org.firstinspires.ftc'
     }
-    // SolversLib commands for Pedro Pathing 3 (depends on com.pedropathing:revhub:3.0.0).
+    // SolversLib commands for Pedro Pathing 3. It asks for com.pedropathing:revhub:3.0.0;
+    // build.dependencies.gradle raises that to 3.0.2, which fixes the swapped OctoQuad pod offsets.
     implementation('org.solverslib:pedroPathing:0.3.6') {
         exclude group: 'org.firstinspires.ftc'
     }

@@ -17,6 +17,7 @@ public final class RobotCentricDrive extends BaseDriveTeleOp {
                 controls::getStrafe,
                 controls::getTurn,
                 GamepadConfig.DRIVE_DEADBAND,
+                GamepadConfig.DRIVE_LIMIT,
                 GamepadConfig.TURN_LIMIT);
     }
 

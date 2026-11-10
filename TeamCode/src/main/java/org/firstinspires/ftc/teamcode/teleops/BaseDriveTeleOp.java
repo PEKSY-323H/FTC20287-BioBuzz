@@ -23,6 +23,9 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
 
     @Override
     public final void initialize() {
+        // An OpMode that crashed in INIT never reaches CommandOpMode's own reset and would
+        // leave its subsystems registered; start from a clean scheduler.
+        reset();
         telemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
         drive = new Drive(hardwareMap);
         shooter = new Shooter(hardwareMap);
@@ -93,6 +96,10 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
     protected void beforeDriveRun() {
     }
 
+    /** Called on STOP after the shared mechanisms are stopped; release extra hardware here. */
+    protected void stopDriveExtras() {
+    }
+
     protected abstract void addDriveTelemetry();
 
     @Override
@@ -102,5 +109,6 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         shooter.stop();
         intake.stop();
         gate.close();
+        stopDriveExtras();
     }
 }

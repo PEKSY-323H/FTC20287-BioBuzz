@@ -22,9 +22,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Drive;
  * <p>Units: inches and radians. Robot axes: +x forward, +y left, heading CCW-positive. The
  * field frame the team writes poses in is documented in {@code utils/Alliance}.
  *
- * <p>Every value marked TODO is a placeholder, NOT measured on this robot. Verify the
- * localizer with a hand-push test (forward → x up, left → y up, CCW → heading up) and run
- * Pedro AutoTune for the Foresight block before driving any path.
+ * <p>Every value marked TODO is a placeholder, NOT measured on this robot. Run the tuners
+ * registered in {@code pedro/Tuning}, in the order given there, before driving any path.
  */
 public final class Constants {
     private Constants() {
@@ -49,8 +48,9 @@ public final class Constants {
 
     /**
      * Pedro writes these parameters to the OctoQuad's RAM on every INIT (not flash),
-     * overriding whatever pod geometry the device had. Use TEST - OctoQuad to find which
-     * port each pod is on and which way it counts.
+     * overriding whatever pod geometry the device had. The OctoQuad Tuner in Pedro AutoTune
+     * (see pedro/Tuning) measures every TODO below and prints a replacement for this block;
+     * TEST - OctoQuad shows which port each pod is on.
      */
     public static final OctoQuadConfig localizerConfig = new OctoQuadConfig(c -> {
         c.name.set("octoquad");
@@ -76,9 +76,9 @@ public final class Constants {
 
     /**
      * TODO: every number here is Pedro's documentation sample, not tuned for this robot.
-     * Replace the whole block with Pedro AutoTune output (http://192.168.43.1:10158).
-     * AutoTune only appears after the Quickstart's pedro/Tuning.java and pedro/procedures
-     * are copied into this package; they are not in this repo yet.
+     * Replace the whole block with the output of the Foresight Tuner in Pedro AutoTune
+     * (http://192.168.43.1:10158, registered in pedro/Tuning), after the localizer passes
+     * the Odometry Test.
      */
     public static final ForesightConfig foresightConfig = new ForesightConfig(c -> {
         Controller primaryForward = Controller.proportional(0.3);
@@ -100,16 +100,26 @@ public final class Constants {
     });
 
     /**
-     * Builds the follower; named {@code create} as in the Pedro 3 docs and Quickstart tuners.
-     * The OctoQuad localizer recalibrates its IMU and blocks until the device reports
-     * RUNNING, so call this during INIT with the robot still.
+     * Builds the follower; named {@code create} as in the Pedro 3 docs. The OctoQuad
+     * localizer recalibrates its IMU and blocks until the device reports RUNNING, so call
+     * this during INIT with the robot still.
      */
     public static Follower create(HardwareMap hardwareMap) {
-        checkOctoQuad(hardwareMap);
         return new Follower(
-                new OctoQuadLocalizer(hardwareMap, localizerConfig),
-                new Mecanum(hardwareMap, drivetrainConfig),
+                createLocalizer(hardwareMap),
+                createDrivetrain(hardwareMap),
                 new Foresight(foresightConfig));
+    }
+
+    /** The configured localizer on its own; also what pedro/Tuning hands to the tuners. */
+    public static OctoQuadLocalizer createLocalizer(HardwareMap hardwareMap) {
+        checkOctoQuad(hardwareMap);
+        return new OctoQuadLocalizer(hardwareMap, localizerConfig);
+    }
+
+    /** The configured drivetrain on its own; also what pedro/Tuning hands to the tuners. */
+    public static Mecanum createDrivetrain(HardwareMap hardwareMap) {
+        return new Mecanum(hardwareMap, drivetrainConfig);
     }
 
     /**

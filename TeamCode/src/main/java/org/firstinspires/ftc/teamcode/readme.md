@@ -40,6 +40,12 @@ The current drive names are `frontLeft`, `frontRight`, `backLeft` and `backRight
 
 The project keeps SolversLib `0.3.4` and FTC SDK `12.0.0`. `TeamCode/build.gradle` excludes only SolversLib's transitive `org.firstinspires.ftc` SDK artifacts because its strict 11.1 constraints conflict with the application's explicit SDK 12.0 dependencies. No library version is upgraded by the headless restoration.
 
+## Autonomous
+
+`autos/RedMainAuto` (Driver Station: **Red Main Auto**) drives the ten paths of `Auto routines/Auto red v1.pp.json` in order, cutting the first nine short so the last one (into the RED LOADING ZONE) always gets its time. It only drives: the shooter, intake and gate are not commanded yet. It has not been run on the robot.
+
+It builds on `autos/BaseAuto` (shared lifecycle and helpers), `subsystems/PathFollower` (Pedro follower), `pedro/Constants` (follower configuration) and `utils/Alliance` / `utils/AutoHandoff`. `pedro/Constants` reads the drive motor names and directions from the constants at the top of `Drive`. Its OctoQuad pod values and Foresight block are placeholders: tune them before driving any path.
+
 ## Reference
 
 - [SolversLib command system](https://docs.seattlesolvers.com/command-base/command-system)

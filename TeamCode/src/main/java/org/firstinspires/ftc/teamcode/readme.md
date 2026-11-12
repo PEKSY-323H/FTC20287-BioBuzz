@@ -20,7 +20,7 @@ Motors `frontLeft`, `frontRight`, `backLeft`, `backRight`, `shooterLeft`, `shoot
 
 The splitter starts assumed retracted. A toggles deploy/retract. In Panels, tune the two splitter powers and shared travel time in `Intake`; the time defaults to zero, so it will not move until calibrated. Verify direction and travel with the string slack. Timing is open-loop, so the displayed target does not confirm actual position; start each OpMode with the splitter retracted.
 
-The drive motor names and directions live in one place, the constants at the top of `Drive`. `pedro/Constants` reads the same constants, so the TeleOps and the Pedro follower always agree. Positive power on every wheel must roll the robot forward. In the TeleOps each wheel is velocity-controlled from its motor encoder: full input is `Drive.MAX_VELOCITY` (2000 ticks/s), so the four wheels match even though their top speeds differ. This needs all four drive motor encoder cables plugged in, and it does not apply to the Pedro follower, which sends power directly.
+The drive motor names and directions live in one place, the constants at the top of `Drive`. `pedro/Constants` reads the same constants, so the TeleOps and the Pedro follower always agree. Positive power on every wheel must roll the robot forward. In the TeleOps, wheel commands use normalized motor power without drive motor encoders. The Pedro follower also sends power directly.
 
 ## Controls (gamepad 1)
 

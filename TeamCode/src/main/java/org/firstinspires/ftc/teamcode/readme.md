@@ -16,7 +16,9 @@ Compiling proves the code builds. It does not prove deployment, sensor calibrati
 
 ## Hardware names
 
-Motors `frontLeft`, `frontRight`, `backLeft`, `backRight`, `shooterLeft`, `shooterRight`, `intake`; servo `gate`; OctoQuad MK2 `octoquad` (type OctoQuadFTC).
+Motors `frontLeft`, `frontRight`, `backLeft`, `backRight`, `shooterLeft`, `shooterRight`, `intake`; servo `gate`; continuous-rotation servo `splitter`; OctoQuad MK2 `octoquad` (type OctoQuadFTC).
+
+The splitter starts assumed retracted. A toggles deploy/retract. In Panels, tune the two splitter powers and shared travel time in `Intake`; the time defaults to zero, so it will not move until calibrated. Verify direction and travel with the string slack. Timing is open-loop, so the displayed target does not confirm actual position; start each OpMode with the splitter retracted.
 
 The drive motor names and directions live in one place, the constants at the top of `Drive`. `pedro/Constants` reads the same constants, so the TeleOps and the Pedro follower always agree. Positive power on every wheel must roll the robot forward. In the TeleOps each wheel is velocity-controlled from its motor encoder: full input is `Drive.MAX_VELOCITY` (2000 ticks/s), so the four wheels match even though their top speeds differ. This needs all four drive motor encoder cables plugged in, and it does not apply to the Pedro follower, which sends power directly.
 
@@ -65,7 +67,7 @@ Before any path is driven, `pedro/Constants` still needs real values: the OctoQu
 
 `autos/RedMainAuto` (Driver Station: **Red Main Auto**) drives the eleven paths of `Auto routines/Auto red v1。1.pp.json` in order: an opening line from the wall to the shooting position, then the ten called Path 1-10 below. Its coordinates are the RED-side numbers from that file; a private `red(...)` helper converts them to the BLUE poses `BaseAuto` expects.
 
-It shoots the preload at the shooting position before Path 1 and shoots again after Paths 3, 7 and 9 (`SHOOT_SECONDS` of feeding each), runs the intake along Path 2, and collects at a FLOWER at the end of Paths 5 and 8 (`FLOWER_SECONDS` stopped with the intake on). The FLOWER servo calls are empty placeholders. Everything before the last path is cut off `PARK_RESERVE_SECONDS` before the end so the drive into the RED LOADING ZONE always gets its time.
+It shoots the preload at the shooting position before Path 1 and shoots again after Paths 3, 7 and 9 (`SHOOT_SECONDS` of feeding each), runs the intake along Path 2, and collects at a FLOWER at the end of Paths 5 and 8 (`FLOWER_SECONDS` stopped with the intake on). The splitter deploys at each FLOWER and retracts after collection; interruption stops it. Everything before the last path is cut off `PARK_RESERVE_SECONDS` before the end so the drive into the RED LOADING ZONE always gets its time.
 
 It has not been run on the robot, and at the default path speed the plan is longer than 30 s, so its end is cut off.
 

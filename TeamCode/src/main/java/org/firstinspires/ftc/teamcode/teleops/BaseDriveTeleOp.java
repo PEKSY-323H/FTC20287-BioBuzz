@@ -20,6 +20,8 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
     private Intake intake;
     private Gate gate;
     private GamepadConfig controls;
+    private boolean splitterButtonWasHeld;
+    private boolean splitterDeployed;
 
     @Override
     public final void initialize() {
@@ -60,6 +62,14 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         // SubsystemBase auto-registers Shooter; the scheduler runs its PID periodic once.
         super.run();
 
+        boolean splitterHeld = controls.isSplitterHeld();
+        if (splitterHeld && !splitterButtonWasHeld) {
+            splitterDeployed = !splitterDeployed;
+            if (splitterDeployed) intake.deploySplitter();
+            else intake.retractSplitter();
+        }
+        splitterButtonWasHeld = splitterHeld;
+
         if (controls.isShootHeld()) {
             shooter.shoot();
         } else {
@@ -89,6 +99,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         telemetry.addData("Shooter Encoder Mismatch", shooter.isEncoderMismatch());
         telemetry.addData("Intake Power Command", intake.getCommandedPower());
         telemetry.addData("Intake Power Actual", intake.getPow());
+        telemetry.addData("Splitter target", splitterDeployed ? "deployed" : "retracted");
         telemetry.addData("Gate Position Command", gate.getPosition());
         telemetry.update();
     }
@@ -108,6 +119,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         drive.stop();
         shooter.stop();
         intake.stop();
+        intake.stopSplitter();
         gate.close();
         stopDriveExtras();
     }

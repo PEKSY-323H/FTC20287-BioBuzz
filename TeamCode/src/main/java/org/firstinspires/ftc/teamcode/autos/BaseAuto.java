@@ -6,6 +6,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.api.Paths;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
+import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.Command;
@@ -34,9 +35,8 @@ import java.util.Set;
  * Shared lifecycle for Pedro + OctoQuad autonomous routines on SolversLib, built around
  * the BIOBUZZ (2026-2027) rules in Competition Manual TU08.
  *
- * <p>Subclasses write every pose for the BLUE side with {@link #pose} in the field frame
- * documented in {@link Alliance}; RED is the same routine rotated 180 degrees about the
- * field centre. Implement {@link #startPose()} and {@link #buildRoutine()}; the routine is
+ * <p>Subclasses may write BLUE poses with {@link #pose} or direct RED field poses with
+ * {@link #redPose}. Implement {@link #startPose()} and {@link #buildRoutine()}; the routine is
  * built during INIT and scheduled at START.
  *
  * <p>What the rules ask of an AUTO, and what this class does about it:
@@ -86,7 +86,7 @@ public abstract class BaseAuto extends CommandOpMode {
         this.alliance = alliance;
     }
 
-    /** Starting pose on the BLUE side, built with {@link #pose}. */
+    /** Starting pose in the team field frame. */
     protected abstract Pose startPose();
 
     /** Builds the whole autonomous as one command. Called once during INIT. */
@@ -171,7 +171,7 @@ public abstract class BaseAuto extends CommandOpMode {
 
     /** Attempts every stop even if one of them throws, then rethrows the first failure. */
     private void stopAll() {
-        Runnable[] stops = {follower::stop, shooter::stop, intake::stop, gate::close};
+        Runnable[] stops = {follower::stop, shooter::stop, intake::stop, intake::stopSplitter, gate::close};
         RuntimeException failure = null;
         for (Runnable stop : stops) {
             try {
@@ -220,6 +220,16 @@ public abstract class BaseAuto extends CommandOpMode {
         return alliance.fromBlue(new Pose(x, y, Math.toRadians(headingDegrees)));
     }
 
+    /** RED-side pose in the team field frame, with an own-side warning. */
+    protected final Pose redPose(double x, double y, double headingDegrees) {
+        if (x > Alliance.FIELD_SIZE / 2 - OWN_SIDE_MARGIN_IN) {
+            setupWarnings.add(String.format(Locale.US,
+                    "G402: RED pose (%.1f, %.1f) is within %.1f in of the opponent side",
+                    x, y, OWN_SIDE_MARGIN_IN));
+        }
+        return new Pose(x, y, Math.toRadians(headingDegrees));
+    }
+
     /** Straight line, heading interpolated from start to end. */
     protected final Path line(Pose start, Pose end) {
         return Paths.line(start, end).linear(start, end);
@@ -230,6 +240,16 @@ public abstract class BaseAuto extends CommandOpMode {
         Pose start = controlPoints[0];
         Pose end = controlPoints[controlPoints.length - 1];
         return Paths.curve(controlPoints).linear(start, end);
+    }
+
+    /** A line with an explicit heading profile from the route editor. */
+    protected final Path line(Pose start, Pose end, Interpolator heading) {
+        return Paths.line(start, end).heading(heading);
+    }
+
+    /** A quadratic Bezier with an explicit heading profile from the route editor. */
+    protected final Path curve(Pose start, Pose control, Pose end, Interpolator heading) {
+        return Paths.curve(start, control, end).heading(heading);
     }
 
     /**

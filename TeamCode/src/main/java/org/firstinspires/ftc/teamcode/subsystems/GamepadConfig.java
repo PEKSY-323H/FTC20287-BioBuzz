@@ -34,6 +34,10 @@ public final class GamepadConfig {
         return gamepad.left_bumper;
     }
 
+    public boolean isSplitterHeld() {
+        return gamepad.a;
+    }
+
     public boolean isOuttakeHeld() {
         return gamepad.left_trigger_pressed;
     }

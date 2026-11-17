@@ -159,7 +159,7 @@ public abstract class BaseAuto extends CommandOpMode {
         telemetry.addData("Follower mode", follower.getMode());
         telemetry.addData("Path completion", follower.getCompletion());
         telemetry.addData("Shooter at speed", shooter.isAtSpeed());
-        telemetry.addData("Shooter Velocity Command", shooter.getCommandedVel());
+        telemetry.addData("Shooter Velocity Command", shooter.getCommandedVelocity());
         telemetry.addData("Shooter Encoder Mismatch", shooter.isEncoderMismatch());
         telemetry.addData("Intake Power Command", intake.getCommandedPower());
         telemetry.addData("Gate Position Command", gate.getPosition());
@@ -248,13 +248,14 @@ public abstract class BaseAuto extends CommandOpMode {
      * A BLUE-side pose from a {@link Points} entry, used as-is in the field frame (no alliance
      * conversion), with the matching own-side warning.
      */
-    protected final Pose bluePose(Points.Point p) {
-        if (p.x < Alliance.FIELD_SIZE / 2 + OWN_SIDE_MARGIN_IN) {
+    protected final Pose bluePose(Points.PoseSource source) {
+        Pose p = source.toPose();
+        if (p.x() < Alliance.FIELD_SIZE / 2 + OWN_SIDE_MARGIN_IN) {
             setupWarnings.add(String.format(Locale.US,
                     "G402: BLUE pose (%.1f, %.1f) is within %.1f in of the opponent side",
-                    p.x, p.y, OWN_SIDE_MARGIN_IN));
+                    p.x(), p.y(), OWN_SIDE_MARGIN_IN));
         }
-        return p.toPose();
+        return p;
     }
 
     /** Straight line, heading interpolated from start to end. */

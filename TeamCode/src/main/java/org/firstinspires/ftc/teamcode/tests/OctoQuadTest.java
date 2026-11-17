@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /** Sensor-only diagnostics: heading, calibration status, CRCs and all eight encoder counts. */
-@TeleOp(name="TEST - OctoQuad", group="Testing")
+@TeleOp(name = "TEST - OctoQuad", group = "Testing")
 public final class OctoQuadTest extends LinearOpMode {
     private static final String OCTOQUAD_NAME = "octoquad";
-    private final OctoQuad.LocalizerDataBlock localizer=new OctoQuad.LocalizerDataBlock();
-    private final OctoQuad.EncoderDataBlock encoders=new OctoQuad.EncoderDataBlock();
+    private final OctoQuad.LocalizerDataBlock localizer = new OctoQuad.LocalizerDataBlock();
+    private final OctoQuad.EncoderDataBlock encoders = new OctoQuad.EncoderDataBlock();
     private OctoQuad octoquad;
     private String firmware;
     private double displayZeroRadians;
@@ -18,19 +18,19 @@ public final class OctoQuadTest extends LinearOpMode {
     private long encoderCrcErrors;
     private boolean previousA;
     private boolean previousB;
-    private String lastAction="INIT calibration: keep the robot still.";
+    private String lastAction = "INIT calibration: keep the robot still.";
 
     @Override
     public void runOpMode() throws InterruptedException {
-        octoquad=hardwareMap.get(OctoQuad.class, OCTOQUAD_NAME);
+        octoquad = hardwareMap.get(OctoQuad.class, OCTOQUAD_NAME);
         if (octoquad.getChipId() != OctoQuad.OCTOQUAD_CHIP_ID) {
             throw new IllegalStateException("OctoQuad chip ID mismatch; check I2C wiring.");
         }
-        OctoQuad.FirmwareVersion version=octoquad.getFirmwareVersion();
-        firmware=version.toString();
+        OctoQuad.FirmwareVersion version = octoquad.getFirmwareVersion();
+        firmware = version.toString();
         if (version.maj != OctoQuad.SUPPORTED_FW_VERSION_MAJ) {
-            throw new IllegalStateException("Unsupported OctoQuad firmware "+firmware
-                    +"; expected major "+OctoQuad.SUPPORTED_FW_VERSION_MAJ);
+            throw new IllegalStateException("Unsupported OctoQuad firmware " + firmware
+                    + "; expected major " + OctoQuad.SUPPORTED_FW_VERSION_MAJ);
         }
 
         telemetry.setMsTransmissionInterval(100);
@@ -45,8 +45,8 @@ public final class OctoQuadTest extends LinearOpMode {
         if (isStopRequested()) {
             return;
         }
-        previousA=gamepad1.a;
-        previousB=gamepad1.b;
+        previousA = gamepad1.a;
+        previousB = gamepad1.b;
         while (opModeIsActive() && !isStopRequested()) {
             readAndReport(true);
             sleep(50);
@@ -54,17 +54,17 @@ public final class OctoQuadTest extends LinearOpMode {
     }
 
     private void readAndReport(boolean allowButtons) {
-        boolean currentA=gamepad1.a;
-        boolean currentB=gamepad1.b;
-        boolean zeroPressed=allowButtons && currentA && !previousA;
-        boolean calibratePressed=allowButtons && currentB && !previousB;
-        previousA=currentA;
-        previousB=currentB;
+        boolean currentA = gamepad1.a;
+        boolean currentB = gamepad1.b;
+        boolean zeroPressed = allowButtons && currentA && !previousA;
+        boolean calibratePressed = allowButtons && currentB && !previousB;
+        previousA = currentA;
+        previousB = currentB;
 
         if (calibratePressed) {
             octoquad.resetLocalizerAndCalibrateIMU();
-            displayZeroRadians=0.0;
-            lastAction="B: recalibrating; keep the robot still.";
+            displayZeroRadians = 0.0;
+            lastAction = "B: recalibrating; keep the robot still.";
         }
 
         // One bulk transaction supplies both blocks; check their CRCs independently.
@@ -76,13 +76,13 @@ public final class OctoQuadTest extends LinearOpMode {
         if (!encoders.crcOk) {
             encoderCrcErrors++;
         }
-        boolean headingValid=localizer.isDataValid() && Float.isFinite(localizer.heading_rad);
+        boolean headingValid = localizer.isDataValid() && Float.isFinite(localizer.heading_rad);
         if (zeroPressed && !calibratePressed) {
             if (headingValid) {
-                displayZeroRadians=localizer.heading_rad;
-                lastAction="A: display zero set; device pose unchanged.";
+                displayZeroRadians = localizer.heading_rad;
+                lastAction = "A: display zero set; device pose unchanged.";
             } else {
-                lastAction="A ignored: wait for valid RUNNING heading.";
+                lastAction = "A ignored: wait for valid RUNNING heading.";
             }
         }
 
@@ -104,8 +104,8 @@ public final class OctoQuadTest extends LinearOpMode {
         }
         telemetry.addData("Heading axis", octoquad.getLocalizerHeadingAxisChoice());
         if (headingValid) {
-            double relativeRadians=localizer.heading_rad-displayZeroRadians;
-            relativeRadians=Math.atan2(Math.sin(relativeRadians), Math.cos(relativeRadians));
+            double relativeRadians = localizer.heading_rad - displayZeroRadians;
+            relativeRadians = Math.atan2(Math.sin(relativeRadians), Math.cos(relativeRadians));
             telemetry.addData("Heading deg", Math.toDegrees(localizer.heading_rad));
             telemetry.addData("Heading rad", localizer.heading_rad);
             telemetry.addData("Relative heading deg", Math.toDegrees(relativeRadians));
@@ -119,14 +119,14 @@ public final class OctoQuadTest extends LinearOpMode {
         }
 
         if (encoders.crcOk) {
-            for (int channel=0; channel<OctoQuad.NUM_ENCODERS; channel++) {
-                telemetry.addData("Encoder "+channel+" ticks", encoders.positions[channel]);
+            for (int channel = 0; channel < OctoQuad.NUM_ENCODERS; channel++) {
+                telemetry.addData("Encoder " + channel + " ticks", encoders.positions[channel]);
             }
         } else {
             telemetry.addData("Encoders", "INVALID CRC: packet discarded");
         }
-        telemetry.addData("Localizer CRC errors / packets", localizerCrcErrors+" / "+totalPackets);
-        telemetry.addData("Encoder CRC errors / packets", encoderCrcErrors+" / "+totalPackets);
+        telemetry.addData("Localizer CRC errors / packets", localizerCrcErrors + " / " + totalPackets);
+        telemetry.addData("Encoder CRC errors / packets", encoderCrcErrors + " / " + totalPackets);
         telemetry.addData("Last action", lastAction);
         telemetry.addLine("A: zero display | B: recalibrate while stationary");
         telemetry.addLine("Rotate robot CCW by hand: heading should increase.");

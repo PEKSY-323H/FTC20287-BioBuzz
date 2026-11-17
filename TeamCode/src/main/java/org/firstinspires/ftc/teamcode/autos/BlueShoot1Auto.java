@@ -17,8 +17,6 @@ import org.firstinspires.ftc.teamcode.utils.Alliance;
 @Autonomous(name = "Blue Shoot 1 Auto", group = "Blue", preselectTeleOp = "Field-Centric")
 public final class BlueShoot1Auto extends BaseAuto {
     public static double SHOOT_SECONDS = 3.0;
-    // Set in Panels before INIT. Normal forward intake power is 0..1.
-    public static double LOADED_INTAKE_POWER = 0.25;
     public static double PARK_RESERVE_SECONDS = 4.0;
     public static long PARK_PATH_TIMEOUT_MS = 8000;
 
@@ -44,7 +42,7 @@ public final class BlueShoot1Auto extends BaseAuto {
 
         return new SequentialCommandGroup(
                 untilSecondsLeft(new SequentialCommandGroup(
-                        new InstantCommand(() -> intake.setPower(LOADED_INTAKE_POWER), intake),
+                        intakeSlow(),
                         spinUp(),
                         follow(startToShoot1),
                         settleAt(shoot1),

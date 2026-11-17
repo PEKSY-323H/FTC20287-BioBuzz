@@ -81,7 +81,9 @@ public final class Intake extends SubsystemBase {
 
     /** Returns whether a timed movement was started; active movements cannot be replaced. */
     private boolean setSplitterPosition(double position, double seconds) {
-        if (isSplitterMoving()) return false;
+        if (isSplitterMoving()) {
+            return false;
+        }
         if (!Double.isFinite(position) || !Double.isFinite(seconds) || seconds <= 0) {
             stopSplitter();
             return false;
@@ -114,5 +116,7 @@ public final class Intake extends SubsystemBase {
         return commandedPower;
     }
 
-    public double getPow() { return intake.getPower(); }
+    public double getPower() {
+        return intake.getPower();
+    }
 }

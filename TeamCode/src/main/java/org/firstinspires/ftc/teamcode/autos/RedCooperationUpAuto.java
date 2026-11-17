@@ -90,7 +90,9 @@ public final class RedCooperationUpAuto extends BaseAuto {
                 new InstantCommand(() -> {
                     if (splitterDown) {
                         intake.stopSplitter();
-                        if (intake.retractSplitter()) splitterDown = false;
+                        if (intake.retractSplitter()) {
+                            splitterDown = false;
+                        }
                     }
                 }, intake),
                 follow(shoot2ToStop2, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS));
@@ -100,7 +102,9 @@ public final class RedCooperationUpAuto extends BaseAuto {
         return new SequentialCommandGroup(
                 new WaitUntilCommand(() -> !intake.isSplitterMoving()),
                 new InstantCommand(() -> {
-                    if (!splitterDown && intake.deploySplitter()) splitterDown = true;
+                    if (!splitterDown && intake.deploySplitter()) {
+                        splitterDown = true;
+                    }
                 }, intake));
     }
 

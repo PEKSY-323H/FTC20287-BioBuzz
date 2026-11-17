@@ -10,12 +10,12 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.jetbrains.annotations.NotNull;
 
-/** Owns the shooter motor; the TeleOp decides when to fire. */
+/** Owns both shooter motors; the OpMode decides when to fire. */
 @Configurable
 public final class Shooter extends SubsystemBase {
     // Shared velocity in encoder ticks per second; tune in Panels.
-    public static double SHOOT_VEL = 1420;
-    // Opt in after tuning; false uses the Hub's existing velocity controller.
+    public static double SHOOT_VELOCITY = 1420;
+    // True uses the custom PID below; false uses the Hub's existing velocity controller.
     public static boolean USE_PID = true;
     // Custom PID gains produce motor power from ticks/s error. Tune in Panels;
     // Hub PIDF tuner coefficients are incompatible. Zeros leave the motor off.
@@ -29,14 +29,15 @@ public final class Shooter extends SubsystemBase {
     // Flag the encoders when they disagree by more than this fraction of the
     // faster reading; below the minimum speed the ratio is too noisy to judge.
     public static double ENCODER_MISMATCH_RATIO = 0.2;
-    public static double ENCODER_CHECK_MIN_VEL = 300;
+    public static double ENCODER_CHECK_MIN_VELOCITY = 300;
     // isAtSpeed() passes when the measured speed is within this many ticks/s of the target.
     public static double AT_SPEED_TOLERANCE = 40;
     public static double OPEN_GATE_TOLERANCE = 100;
-    private final DcMotorEx shooterLeft, shooterRight;
+    private final DcMotorEx shooterLeft;
+    private final DcMotorEx shooterRight;
     private final ElapsedTime loopTimer = new ElapsedTime();
-    private double commandedVel;
-    private double measuredVel;
+    private double commandedVelocity;
+    private double measuredVelocity;
     private double integral;
     private double previousError;
     private boolean hasPreviousError;
@@ -65,7 +66,7 @@ public final class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        setVelocity(SHOOT_VEL);
+        setVelocity(SHOOT_VELOCITY);
     }
 
     public void setVelocity(double velocity) {
@@ -74,10 +75,10 @@ public final class Shooter extends SubsystemBase {
             stop();
             return;
         }
-        if (velocity != commandedVel) {
+        if (velocity != commandedVelocity) {
             resetController();
         }
-        commandedVel = velocity;
+        commandedVelocity = velocity;
         if (!usingPid) {
             shooterLeft.setVelocity(velocity);
             shooterRight.setVelocity(velocity);
@@ -87,13 +88,13 @@ public final class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         updateControlMode();
-        if (commandedVel == 0.0) {
+        if (commandedVelocity == 0.0) {
             return;
         }
-        measuredVel = measureVelocity();
+        measuredVelocity = measureVelocity();
         if (!usingPid) {
-            shooterLeft.setVelocity(commandedVel);
-            shooterRight.setVelocity(commandedVel);
+            shooterLeft.setVelocity(commandedVelocity);
+            shooterRight.setVelocity(commandedVelocity);
             return;
         }
         if (usingF != USE_F) {
@@ -104,9 +105,9 @@ public final class Shooter extends SubsystemBase {
 
         double dt = Math.max(loopTimer.seconds(), 0.001);
         loopTimer.reset();
-        double error = commandedVel - measuredVel;
+        double error = commandedVelocity - measuredVelocity;
         double slope = hasPreviousError ? (error - previousError) / dt : 0.0;
-        double feedforward = usingF ? VELOCITY_F * commandedVel : 0.0;
+        double feedforward = usingF ? VELOCITY_F * commandedVelocity : 0.0;
         double base = feedforward + VELOCITY_P * error + VELOCITY_D * slope;
         double candidateIntegral = integral + error * dt;
         double trial = base + VELOCITY_I * candidateIntegral;
@@ -138,8 +139,8 @@ public final class Shooter extends SubsystemBase {
             shooterLeft.setVelocity(0.0);
             shooterRight.setVelocity(0.0);
         }
-        commandedVel = 0.0;
-        measuredVel = 0.0;
+        commandedVelocity = 0.0;
+        measuredVelocity = 0.0;
         encoderMismatch = false;
         resetController();
     }
@@ -152,7 +153,7 @@ public final class Shooter extends SubsystemBase {
         double left = shooterLeft.getVelocity();
         double right = shooterRight.getVelocity();
         double faster = Math.max(Math.abs(left), Math.abs(right));
-        encoderMismatch = faster >= ENCODER_CHECK_MIN_VEL
+        encoderMismatch = faster >= ENCODER_CHECK_MIN_VELOCITY
                 && Math.abs(left - right) > ENCODER_MISMATCH_RATIO * faster;
         if (!encoderMismatch) {
             return (left + right) / 2;
@@ -188,19 +189,19 @@ public final class Shooter extends SubsystemBase {
     }
 
     /** Requested velocity in ticks/s, not an RPM or motion measurement. */
-    public double getCommandedVel() {
-        return commandedVel;
+    public double getCommandedVelocity() {
+        return commandedVelocity;
     }
 
     /** True once the flywheel, measured in the last periodic(), is near a nonzero target. */
     public boolean isAtSpeed() {
-        return commandedVel != 0.0
-                && Math.abs(commandedVel - measuredVel) <= AT_SPEED_TOLERANCE;
+        return commandedVelocity != 0.0
+                && Math.abs(commandedVelocity - measuredVelocity) <= AT_SPEED_TOLERANCE;
     }
 
     /** True when the measured velocity exceeds the gate-opening threshold for a positive target. */
     public boolean canOpenGate() {
-        return commandedVel > 0.0 && measuredVel > commandedVel - OPEN_GATE_TOLERANCE;
+        return commandedVelocity > 0.0 && measuredVelocity > commandedVelocity - OPEN_GATE_TOLERANCE;
     }
 
     /** True while the two shooter encoders disagree; check the wiring. */
@@ -208,19 +209,19 @@ public final class Shooter extends SubsystemBase {
         return encoderMismatch;
     }
 
-    public double getLeftVel() {
+    public double getLeftVelocity() {
         return shooterLeft.getVelocity();
     }
 
-    public double getRightVel() {
+    public double getRightVelocity() {
         return shooterRight.getVelocity();
     }
 
-    public double getLeftPow() {
+    public double getLeftPower() {
         return shooterLeft.getPower();
     }
 
-    public double getRightPow() {
+    public double getRightPower() {
         return shooterRight.getPower();
     }
 }

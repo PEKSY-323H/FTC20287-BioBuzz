@@ -43,7 +43,8 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
     private GamepadConfig controls;
     private Alliance alliance;
     private boolean usingHandoff;
-    private boolean shoot1WasHeld, shoot2WasHeld;
+    private boolean shoot1WasHeld;
+    private boolean shoot2WasHeld;
     private boolean resetWasHeld;
     private AutoHandoff handoff;
 
@@ -181,7 +182,9 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
 
     private double applyDeadband(double input) {
         double deadband = GamepadConfig.DRIVE_DEADBAND;
-        if (Math.abs(input) <= deadband) return 0;
+        if (Math.abs(input) <= deadband) {
+            return 0;
+        }
         return Math.copySign((Math.abs(input) - deadband) / (1 - deadband), input);
     }
 

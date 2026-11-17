@@ -38,11 +38,6 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
 
     protected abstract void initializeDrive(GamepadConfig controls);
 
-    protected double getShooterVelocity() {
-        return Shooter.SHOOT_VEL;
-    }
-
-
     @Override
     public final void initialize_loop() {
         updateDriveInitialization();
@@ -64,7 +59,9 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         boolean splitterHeld = controls.isSplitterHeld();
         if (splitterHeld && !splitterButtonWasHeld && !intake.isSplitterMoving()) {
             boolean started = splitterDeployed ? intake.retractSplitter() : intake.deploySplitter();
-            if (started) splitterDeployed = !splitterDeployed;
+            if (started) {
+                splitterDeployed = !splitterDeployed;
+            }
         }
         splitterButtonWasHeld = splitterHeld;
 
@@ -99,14 +96,14 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         }
 
         addDriveTelemetry();
-        telemetry.addData("Shooter Left Power Actual", shooter.getLeftPow());
-        telemetry.addData("Shooter Right Power Actual", shooter.getRightPow());
-        telemetry.addData("Shooter Velocity Command", shooter.getCommandedVel());
-        telemetry.addData("Shooter Left Velocity Actual", shooter.getLeftVel());
-        telemetry.addData("Shooter Right Velocity Actual", shooter.getRightVel());
+        telemetry.addData("Shooter Left Power Actual", shooter.getLeftPower());
+        telemetry.addData("Shooter Right Power Actual", shooter.getRightPower());
+        telemetry.addData("Shooter Velocity Command", shooter.getCommandedVelocity());
+        telemetry.addData("Shooter Left Velocity Actual", shooter.getLeftVelocity());
+        telemetry.addData("Shooter Right Velocity Actual", shooter.getRightVelocity());
         telemetry.addData("Shooter Encoder Mismatch", shooter.isEncoderMismatch());
         telemetry.addData("Intake Power Command", intake.getCommandedPower());
-        telemetry.addData("Intake Power Actual", intake.getPow());
+        telemetry.addData("Intake Power Actual", intake.getPower());
         telemetry.addData("Splitter rotation command", splitterDeployed ? "deploy" : "retract / initially stopped");
         telemetry.addData("Splitter timer active", intake.isSplitterMoving());
         telemetry.addData("Fire", !fireHeld ? "-"

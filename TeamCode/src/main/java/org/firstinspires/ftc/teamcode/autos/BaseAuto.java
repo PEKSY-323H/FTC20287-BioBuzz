@@ -158,7 +158,6 @@ public abstract class BaseAuto extends CommandOpMode {
         addPoseTelemetry();
         telemetry.addData("Follower mode", follower.getMode());
         telemetry.addData("Path completion", follower.getCompletion());
-        telemetry.addData("Shooter at speed", shooter.isAtSpeed());
         telemetry.addData("Shooter Velocity Command", shooter.getCommandedVelocity());
         telemetry.addData("Shooter Encoder Mismatch", shooter.isEncoderMismatch());
         telemetry.addData("Intake Power Command", intake.getCommandedPower());

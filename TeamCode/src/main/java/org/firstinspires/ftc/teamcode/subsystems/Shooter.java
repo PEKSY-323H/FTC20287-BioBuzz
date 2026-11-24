@@ -31,7 +31,6 @@ public final class Shooter extends SubsystemBase {
     public static double ENCODER_MISMATCH_RATIO = 0.2;
     public static double ENCODER_CHECK_MIN_VELOCITY = 300;
     // isAtSpeed() passes when the measured speed is within this many ticks/s of the target.
-    public static double AT_SPEED_TOLERANCE = 40;
     public static double OPEN_GATE_TOLERANCE = 100;
     private final DcMotorEx shooterLeft;
     private final DcMotorEx shooterRight;
@@ -191,12 +190,6 @@ public final class Shooter extends SubsystemBase {
     /** Requested velocity in ticks/s, not an RPM or motion measurement. */
     public double getCommandedVelocity() {
         return commandedVelocity;
-    }
-
-    /** True once the flywheel, measured in the last periodic(), is near a nonzero target. */
-    public boolean isAtSpeed() {
-        return commandedVelocity != 0.0
-                && Math.abs(commandedVelocity - measuredVelocity) <= AT_SPEED_TOLERANCE;
     }
 
     /** True when the measured velocity exceeds the gate-opening threshold for a positive target. */

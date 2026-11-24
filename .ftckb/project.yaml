@@ -6,8 +6,8 @@
   "season": "2026-2027",
   "source": {
     "repository": "https://github.com/lucasnotfound59/FTC-Knowledge-Bank.git",
-    "ref": "432df5824ac304f96c3e55b13b146965a8034930",
-    "commit": "432df5824ac304f96c3e55b13b146965a8034930",
+    "ref": "229414fd267a7634d9dd0c4ddd96347425e0bd71",
+    "commit": "229414fd267a7634d9dd0c4ddd96347425e0bd71",
     "path": "tools/FTC-Knowledge-Bank"
   },
   "profiles": [

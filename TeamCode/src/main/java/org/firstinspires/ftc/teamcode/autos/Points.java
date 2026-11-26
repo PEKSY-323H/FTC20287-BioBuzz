@@ -68,23 +68,23 @@ public final class Points {
         }
 
         // ---------- Waypoints ----------
-        public static Point START = new Point(49.8, 8.34, 270);
+        public static Point START = new Point(84.60629921259843, 131.92913385826773, 270);
         /** RED counterpart of the delayed BLUE parking start. */
-        public static Point START_OUTSIDE_END_ZONE = new Point(12.0, 87.9, 0);
+        public static Point START_OUTSIDE_END_ZONE = new Point(77.08661417322836, 7.204724409448819, 90);
         /** Starting location for the Least routine. */
         public static Point START_2 = new Point(63.46, 132.8, 90);
         // Shooting headings put the rear-facing turret toward the HIVE.
-        public static Point SHOOT_1 = new Point(54.5, 16.5, 270);
-        public static Point FLOWER_PREP_1 = new Point(16.45, 48.54, 180);
-        public static Point FLOWER_1 = new Point(9.5, 48.54, 180);
-        public static Point SHOOT_2 = new Point(55.4, 124.4, 90);
-        public static Point FLOWER_PREP_2 = new Point(44.0157, 120.8268, 90);
-        public static Point FLOWER_2 = new Point(45.08, 129.5945, 90);
-        public static Point SHOOT_2_RETURN = new Point(58.05410766601562, 126.57603672572543, 90);
-        public static Point GARDEN_PREP = new Point(20.47, 6.145, 180);
-        public static Point GARDEN = new Point(4.96, 6.145, 180);
-        public static Point SHOOT_1_RETURN = new Point(57.67, 15.78, -90);
-        public static Point STOP_1 = new Point(9.43345642089844, 96.21348135811941, 0);
+        public static Point SHOOT_1 = new Point(78.58267716535434, 125.31496062992126, 90);
+        public static Point FLOWER_PREP_1 = new Point(115.43307086614173, 93.26771653543308, 360);
+        public static Point FLOWER_1 = new Point(125.74803149606299, 92.44094488188976, 360);
+        public static Point SHOOT_2 = new Point(81.22047244094489, 14.133858267716535, 270);
+        public static Point FLOWER_PREP_2 = new Point(91.92913385826772, 22.086614173228348, 270);
+        public static Point FLOWER_2 = new Point(92.16535433070867, 14.960629921259843, 270);
+        public static Point SHOOT_2_RETURN = new Point(79.60629921259842, 14.173228346456693, 270);
+        public static Point GARDEN_PREP = new Point(108.4251968503937, 132.24409448818898, 360);
+        public static Point GARDEN = new Point(130.5511811023622, 131.77165354330708, 360);
+        public static Point SHOOT_1_RETURN = new Point(79.88188976377953, 124.25196850393702, 90);
+        public static Point STOP_1 = new Point(131.96850393700788, 36.338582677165356, 180);
         /** Parking location inside the RED LOADING ZONE. */
         public static Point STOP_2 = new Point(11, 118.66, 0);
 

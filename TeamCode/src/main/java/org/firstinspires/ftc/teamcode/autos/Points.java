@@ -36,7 +36,11 @@ public final class Points {
 
     /** Selects the alliance's CELL in the audience or scoring half of the Pedro field. */
     public static Pose cellTarget(Alliance alliance, double fieldY) {
-        boolean audienceHalf = fieldY < Alliance.FIELD_SIZE / 2;
+        return cellTarget(alliance, fieldY < Alliance.FIELD_SIZE / 2);
+    }
+
+    /** The alliance's CELL in the audience half (y below the midline) or the scoring half. */
+    public static Pose cellTarget(Alliance alliance, boolean audienceHalf) {
         if (alliance == Alliance.BLUE) {
             return (audienceHalf ? Blue.CELL_AUDIENCE : Blue.CELL_SCORING).toPose();
         }

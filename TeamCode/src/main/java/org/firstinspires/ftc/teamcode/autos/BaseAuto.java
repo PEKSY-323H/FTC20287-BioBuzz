@@ -113,7 +113,7 @@ public abstract class BaseAuto extends CommandOpMode {
         telemetry.addLine("Calibrating OctoQuad IMU: keep the robot still...");
         telemetry.update();
         startFieldPose = startPose();
-        // Blocks until the OctoQuad reports RUNNING.
+        // Starts the OctoQuad calibration without waiting; INIT telemetry shows when it is done.
         follower = new PathFollower(hardwareMap, startFieldPose);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
@@ -200,6 +200,7 @@ public abstract class BaseAuto extends CommandOpMode {
     }
 
     private void addPoseTelemetry() {
+        telemetry.addData("Localization", follower.getLocalization().statusLine());
         Pose p = follower.getPose();
         if (p == null) {
             telemetry.addData("Pose", "UNAVAILABLE");

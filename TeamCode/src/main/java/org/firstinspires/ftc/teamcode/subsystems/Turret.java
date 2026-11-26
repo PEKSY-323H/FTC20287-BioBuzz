@@ -29,6 +29,9 @@ public final class Turret extends SubsystemBase {
     public static double CENTER_POSITION = 0.5;
     // Applied at construction to set the direction of positive angles.
     public static boolean REVERSED = false;
+    // Targets within this many degrees of dead-front (unreachable either way) hold the
+    // current limit side. 0 disables; capped at 90 so reachable angles are never affected.
+    public static double FRONT_HYSTERESIS_DEG = 30.0;
 
     private final ServoImplEx turret;
     private double commandedAngleDegrees = Double.NaN;
@@ -73,6 +76,15 @@ public final class Turret extends SubsystemBase {
 
         double rearOffsetDegrees = AngleUnit.normalizeDegrees(angleDegrees % 360.0 - CENTER_ANGLE_DEGREES);
         double limitedOffsetDegrees = Range.clip(rearOffsetDegrees, -MAX_OFFSET_DEGREES, MAX_OFFSET_DEGREES);
+        // Near dead-front the target is out of reach on both sides and the sign of the error
+        // flips with heading noise; keep the limit the turret is already on instead of
+        // swinging 180 degrees to the other one.
+        double band = Range.clip(FRONT_HYSTERESIS_DEG, 0.0, 180.0 - MAX_OFFSET_DEGREES);
+        double currentOffsetDegrees = commandedAngleDegrees - CENTER_ANGLE_DEGREES;
+        if (Math.abs(rearOffsetDegrees) > 180.0 - band && currentOffsetDegrees != 0.0
+                && Double.isFinite(currentOffsetDegrees)) {
+            limitedOffsetDegrees = Math.copySign(MAX_OFFSET_DEGREES, currentOffsetDegrees);
+        }
         double offset = Range.clip(limitedOffsetDegrees / TURRET_DEGREES_PER_SERVO_RANGE,
                 -centerPosition, 1.0 - centerPosition);
         turret.setPosition(centerPosition + offset);

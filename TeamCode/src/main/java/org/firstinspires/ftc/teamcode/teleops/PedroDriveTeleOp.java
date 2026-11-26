@@ -8,6 +8,7 @@ import com.pedropathing.paths.interpolator.Interpolator;
 
 import org.firstinspires.ftc.teamcode.autos.Points;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.OctoQuadImuBackupLocalizer;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadConfig;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.Alliance;
@@ -45,12 +46,14 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
     public static double CELL_SWITCH_MARGIN_IN = 6.0;
 
     protected Follower follower;
+    private OctoQuadImuBackupLocalizer localization;
     private GamepadConfig controls;
     private Alliance alliance;
     private boolean usingHandoff;
     private boolean shoot1WasHeld;
     private boolean shoot2WasHeld;
     private boolean resetWasHeld;
+    private boolean positionWasTracked;
     private boolean cellChosen;
     private boolean aimAudienceCell;
     private AutoHandoff handoff;
@@ -87,9 +90,11 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
         Pose startPose = usingHandoff ? handoff.pose
                 : new Pose(START_X_IN, START_Y_IN, Math.toRadians(START_HEADING_DEG));
 
-        follower = Constants.create(hardwareMap);
+        localization = Constants.createBackupLocalizer(hardwareMap);
+        follower = Constants.create(hardwareMap, localization);
         follower.setPose(startPose);
         follower.holdEnd.set(false);
+        positionWasTracked = true;
         cellChosen = false;
     }
 
@@ -108,6 +113,7 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
         shoot1WasHeld = controls.isDriveToShoot1Held();
         shoot2WasHeld = controls.isDriveToShoot2Held();
         follower.localizer.update();
+        telemetry.addData("Localization", localization.statusLine());
         telemetry.addData("Start pose source", usingHandoff ? "AUTO handoff" : "configured");
         telemetry.addData("Alliance", alliance);
         if (usingHandoff) {
@@ -139,7 +145,18 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
         boolean shoot1Held = controls.isDriveToShoot1Held();
         boolean shoot2Held = controls.isDriveToShoot2Held();
 
-        if (!driverMoving && !driveModeChanged) {
+        // On the IMU backup x/y are frozen: a B/X path would never see the robot move.
+        boolean positionTracked = localization.isPositionTracked();
+        if (!positionTracked && follower.mode() == Follower.Mode.FOLLOW) {
+            follower.manual(0, 0, 0);
+        }
+        if (positionWasTracked && !positionTracked) {
+            // Tell the driver once: field-centric and aiming now run on the IMU heading.
+            controls.rumble(500);
+        }
+        positionWasTracked = positionTracked;
+
+        if (!driverMoving && !driveModeChanged && positionTracked) {
             // Read this alliance's shared points now so Panels tuning is reflected in each new path.
             if (shoot1Held && !shoot1WasHeld) {
                 followTo(shootingTarget(true));
@@ -232,6 +249,10 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
     protected final void addDriveTelemetry() {
         Pose pose = follower.pose();
         telemetry.addData("Pedro", follower.mode());
+        telemetry.addData("Localization", localization.statusLine());
+        if (!localization.isPositionTracked()) {
+            telemetry.addLine("B/X paths disabled: position is not tracked.");
+        }
         telemetry.addData("Drive frame", stickFrameHint());
         telemetry.addData("Alliance", alliance);
         Pose reset = allianceResetPose();

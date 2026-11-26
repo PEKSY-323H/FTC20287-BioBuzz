@@ -4,7 +4,6 @@ import com.pedropathing.algorithm.Foresight;
 import com.pedropathing.algorithm.ForesightConfig;
 import com.pedropathing.controllers.Controller;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.localization.Localizer;
 import com.pedropathing.math.Matrix;
 import com.pedropathing.math.Vector2D;
 import com.pedropathing.revhub.drivetrains.Mecanum;
@@ -74,26 +73,15 @@ public final class Constants {
     );
 
     /**
-     * Builds the follower; named {@code create} as in the Pedro 3 docs. It uses the OctoQuad
-     * with the Control Hub IMU as heading backup. The OctoQuad starts recalibrating its IMU
-     * here without blocking, so call this during INIT and keep the robot still until
-     * {@link OctoQuadImuBackupLocalizer#getSource()} reports ODOMETRY.
+     * Builds the follower; named {@code create} as in the Pedro 3 docs. The OctoQuad
+     * localizer recalibrates its IMU and blocks until the device reports RUNNING, so call
+     * this during INIT with the robot still.
      */
     public static Follower create(HardwareMap hardwareMap) {
-        return create(hardwareMap, createBackupLocalizer(hardwareMap));
-    }
-
-    /** The follower around an already built localizer, so an OpMode can keep a handle to it. */
-    public static Follower create(HardwareMap hardwareMap, Localizer localizer) {
         return new Follower(
-                localizer,
+                createLocalizer(hardwareMap),
                 createDrivetrain(hardwareMap),
                 new Foresight(foresightConfig));
-    }
-
-    /** OctoQuad localizer with Control Hub IMU heading backup; never blocks, never hangs INIT. */
-    public static OctoQuadImuBackupLocalizer createBackupLocalizer(HardwareMap hardwareMap) {
-        return new OctoQuadImuBackupLocalizer(hardwareMap, localizerConfig);
     }
 
     /**
@@ -117,10 +105,7 @@ public final class Constants {
         c.headingScalar.set(1.0079471955361563);
     });
 
-    /**
-     * The plain OctoQuad localizer, without the IMU backup: what pedro/Tuning hands to the
-     * tuners, so tuning measures the OctoQuad alone. Blocks until the OctoQuad is RUNNING.
-     */
+    /** The configured localizer on its own; also what pedro/Tuning hands to the tuners. */
     public static OctoQuadLocalizer createLocalizer(HardwareMap hardwareMap) {
         checkOctoQuad(hardwareMap);
         return new OctoQuadLocalizer(hardwareMap, localizerConfig);

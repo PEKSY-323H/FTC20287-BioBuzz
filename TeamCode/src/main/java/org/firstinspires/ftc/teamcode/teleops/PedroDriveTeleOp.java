@@ -17,7 +17,7 @@ import java.util.Locale;
 /**
  * Shared Pedro driving for both TeleOps: one Pedro follower does manual drive, the B/X
  * shooting-position paths and the OctoQuad odometry. Starts from the pose where AUTO ended
- * (AutoHandoff) when there is one; gamepad 1 D-pad down resets the odometry to the alliance's
+ * (AutoHandoff) when there is one; gamepad 1 Y resets the odometry to the alliance's
  * reset pose. Subclasses only decide how stick input becomes drive power.
  */
 @Configurable
@@ -29,7 +29,7 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
     public static double START_Y_IN = 70.75;
     public static double START_HEADING_DEG = 0.0;
 
-    // Gamepad 1 D-pad down resets the odometry to this pose for the current alliance, e.g. with the
+    // Gamepad 1 Y resets the odometry to this pose for the current alliance, e.g. with the
     // robot pushed against a known spot. Field frame, inches and degrees.
     // TODO: placeholders, fill in the measured reset poses.
     public static double RED_RESET_X_IN = 0.0;
@@ -107,7 +107,7 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
                     handoff.pose.x(), handoff.pose.y(), Math.toDegrees(handoff.pose.heading()),
                     AutoHandoff.secondsSinceRecorded()));
         }
-        telemetry.addLine("D-pad down: reset odometry to the " + alliance + " reset pose.");
+        telemetry.addLine("Y: reset odometry to the " + alliance + " reset pose.");
         telemetry.addLine("B: shoot1. X: shoot2. Move a drive stick to cancel.");
         telemetry.addData("B shooting target", shootingTarget(true));
         telemetry.addData("X shooting target", shootingTarget(false));
@@ -201,7 +201,7 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
         telemetry.addData("Drive frame", stickFrameHint());
         telemetry.addData("Alliance", alliance);
         Pose reset = allianceResetPose();
-        telemetry.addData("D-pad down reset pose", String.format(Locale.US, "(%.1f, %.1f, %.0f deg)",
+        telemetry.addData("Y reset pose", String.format(Locale.US, "(%.1f, %.1f, %.0f deg)",
                 reset.x(), reset.y(), Math.toDegrees(reset.heading())));
         telemetry.addData("Field x (in)", pose.x());
         telemetry.addData("Field y (in)", pose.y());

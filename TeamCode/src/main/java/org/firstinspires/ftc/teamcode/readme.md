@@ -18,7 +18,7 @@ Compiling proves the code builds. It does not prove deployment, sensor calibrati
 
 Motors `frontLeft`, `frontRight`, `backLeft`, `backRight`, `shooterLeft`, `shooterRight`, `intake`; positional servo `gate`; continuous-rotation servo `splitter`; OctoQuad MK2 `octoquad` (type OctoQuadFTC).
 
-Configure `splitter` as a Servo in Robot Configuration, with the physical servo in continuous-rotation mode. `Servo.setPosition()` supplies rotation commands, not angles: deploy defaults to 1.0, retract to 0.0, and neutral to 0.5 (direction is FORWARD). Calibrate `Intake.SPLITTER_DEPLOY_POSITION`, `SPLITTER_RETRACT_POSITION`, `SPLITTER_STOP_POSITION`, and the separate `SPLITTER_DEPLOY_SECONDS` / `SPLITTER_RETRACT_SECONDS` travel times in Panels. Deploy/retract times currently default to 0.75/0.76 seconds; measure them for the mechanism. A nonpositive or nonfinite duration disables that movement. Initialization sends neutral. Each accepted A press switches deploy/retract direction and starts its timer; expiry sends neutral without blocking driving. Presses during movement are discarded, requiring a release and a fresh press afterward. Invalid or disabled movements do not toggle the target. OpMode STOP also sends neutral. FLOWER collection uses the deploy timer and sends neutral when finished or interrupted.
+Configure `splitter` as a Servo in Robot Configuration, with the physical servo in continuous-rotation mode. `Servo.setPosition()` supplies rotation commands, not angles: deploy defaults to 1.0, retract to 0.0, and neutral to 0.5 (direction is FORWARD). Calibrate `Intake.SPLITTER_DEPLOY_POSITION`, `SPLITTER_RETRACT_POSITION`, `SPLITTER_STOP_POSITION`, and the separate `SPLITTER_DEPLOY_SECONDS` / `SPLITTER_RETRACT_SECONDS` travel times in Panels. Deploy/retract times currently default to 0.75/0.76 seconds; measure them for the mechanism. A nonpositive or nonfinite duration disables that movement. Initialization sends neutral. Each accepted D-pad up press switches deploy/retract direction and starts its timer; expiry sends neutral without blocking driving. Presses during movement are discarded, requiring a release and a fresh press afterward. Invalid or disabled movements do not toggle the target. OpMode STOP also sends neutral. FLOWER collection uses the deploy timer and sends neutral when finished or interrupted.
 
 The drive motor names and directions live in one place, the constants at the top of `Drive`. `pedro/Constants` reads the same constants, so the TeleOps and the Pedro follower always agree. Positive power on every wheel must roll the robot forward. In the TeleOps, wheel commands use normalized motor power without drive motor encoders. The Pedro follower also sends power directly.
 
@@ -38,7 +38,7 @@ After tuning and verifying Pedro, use its follower for manual drive, path follow
 
 ## Controls
 
-Gamepad 1 (driver):
+All TeleOp controls use gamepad 1.
 
 | Input | Action |
 | --- | --- |
@@ -46,32 +46,27 @@ Gamepad 1 (driver):
 | Right stick X | Turn (scaled by `GamepadConfig.TURN_LIMIT`) |
 | LB (hold) | Intake |
 | LT (hold) | Outtake |
-| A (press) | Splitter down / up |
+| RB (hold) | Spin up the flywheel with the gate closed |
+| RT (hold) | Spin up the flywheel and open the gate to feed at speed |
+| D-pad up (press) | Lower or raise Flower (splitter) |
 | B (press) | Pedro drives to shoot1 |
 | X (press) | Pedro drives to shoot2 |
-| D-pad down (press) | Reset odometry to the alliance's reset pose |
-| D-pad up (press) | Field-Centric only: toggle robot-centric fallback and cancel the current path |
+| Y (press) | Reset odometry to the alliance's reset pose |
+| D-pad right (press) | Switch between field-centric and robot-centric driving in the Field-Centric OpMode and cancel the current path |
 
-Gamepad 2 (operator):
+Holding RT takes priority over intake and outtake. Once the flywheel reaches the gate-opening speed, the gate opens and the intake feeds balls. If the speed drops below the threshold, the gate closes and feeding pauses until the flywheel recovers. Releasing RT closes the gate, stops the preshooter, and returns intake control to LB and LT. Keep holding RB to keep the flywheel spinning. If LB and LT are both held, LB takes priority.
 
-| Input | Action |
-| --- | --- |
-| LB (hold) | Intake, same as gamepad 1 |
-| LT (hold) | Outtake, same as gamepad 1 |
-| RB (hold) | Shooter spin-up |
-| RT (hold) | Run shooter; open gate and run shooting intake only while `canOpenGate()` is true |
-
-Intake and outtake work from either gamepad; intake takes priority over outtake. Gamepad 2 RB spins up the shooter only. Gamepad 2 RT also runs the shooter and requests feeding: the gate opens and the intake runs at `Intake.SHOOT_INTAKE_POWER` (default 0.8) only while `canOpenGate()` is true. Otherwise the gate closes and feeding stops. Releasing RT closes the gate; RB may remain held to keep the shooter spinning.
+Configure the feeder motor as `preshooter` in the Robot Controller hardware configuration. The preshooter runs alongside the intake during shooting feed in TeleOp and Auto.
 
 ## Field-Centric and Robot-Centric TeleOps
 
 Both run on `PedroDriveTeleOp`: one Pedro follower for manual drive, the B/X paths and the OctoQuad odometry, so the pose, the B/X shooting points, the AUTO handoff and the reset work the same in both, and their settings live in Panels under `PedroDriveTeleOp`. Field-Centric drives relative to the field (below); Robot-Centric drives relative to the robot's facing.
 
-Manual driving and paths use the same field pose as AUTO: inches, with heading in radians and counterclockwise-positive. In Field-Centric with AUTO handoff, stick-forward moves away from the alliance drivers (+x RED, -x BLUE). Without handoff, heading zero (+x) is forward for either alliance. D-pad up toggles a robot-centric fallback; Robot-Centric always follows the robot's facing. Pedro manual inputs are forward-positive, left-positive and CCW-positive; the gamepad adapter converts strafe and turn signs explicitly.
+Manual driving and paths use the same field pose as AUTO: inches, with heading in radians and counterclockwise-positive. In Field-Centric with AUTO handoff, stick-forward moves away from the alliance drivers (+x RED, -x BLUE). Without handoff, heading zero (+x) is forward for either alliance. The Field-Centric OpMode starts in field-centric mode. D-pad right switches between the two modes; Robot-Centric always follows the robot's facing. Pedro manual inputs are forward-positive, left-positive and CCW-positive; the gamepad adapter converts strafe and turn signs explicitly.
 
 Handoff: when an AUTO ended less than 30 s ago, INIT starts from the odometry pose where that AUTO ended, with its alliance (`USE_AUTO_HANDOFF`). The Driver Station shows that pose during INIT. Re-INITing the TeleOp picks it up again. Otherwise, set `START_X_IN`, `START_Y_IN`, `START_HEADING_DEG`, and `START_ON_BLUE` before INIT. During standalone INIT, X selects BLUE and B selects RED; these presses do not launch paths. Keep the robot still during INIT while Pedro initializes the OctoQuad.
 
-Reset: gamepad 1 D-pad down overwrites the odometry pose with `RED_RESET_X_IN` / `RED_RESET_Y_IN` / `RED_RESET_HEADING_DEG` or the `BLUE_RESET_*` values, by the current alliance, cancels a running B/X path, and rumbles gamepad 1. The reset values are placeholders (0) until measured.
+Reset: gamepad 1 Y overwrites the odometry pose with `RED_RESET_X_IN` / `RED_RESET_Y_IN` / `RED_RESET_HEADING_DEG` or the `BLUE_RESET_*` values, by the current alliance, cancels a running B/X path, and rumbles gamepad 1. The reset values are placeholders (0) until measured.
 
 Press B for shoot1 or X for shoot2. Moving a drive stick cancels the path. One Pedro follower handles manual drive, path following, and localization; the standalone `Localizer` subsystem is not constructed in this TeleOp.
 

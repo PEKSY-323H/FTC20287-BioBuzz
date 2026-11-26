@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.GamepadConfig;
 /**
  * Field-centric manual drive: with AUTO handoff, stick-forward moves away from the alliance's
  * drivers (+x RED, -x BLUE). Without handoff, heading zero is forward for either alliance.
- * Pose, B/X paths, AUTO handoff and D-pad reset come from {@link PedroDriveTeleOp}.
+ * Pose, B/X paths, AUTO handoff and the Y reset come from {@link PedroDriveTeleOp}.
  */
 @TeleOp(name = "Field-Centric")
 public final class FieldCentricDrive extends PedroDriveTeleOp {
@@ -43,6 +43,6 @@ public final class FieldCentricDrive extends PedroDriveTeleOp {
                 : isUsingAutoHandoff()
                         ? "FIELD: forward away from drivers (+x RED, -x BLUE)."
                         : "FIELD: standalone, heading zero is forward (+x).")
-                + " D-pad up: toggle drive frame and cancel the current path.";
+                + " D-pad right: toggle drive frame and cancel the current path.";
     }
 }

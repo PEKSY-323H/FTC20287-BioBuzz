@@ -383,19 +383,22 @@ public abstract class BaseAuto extends CommandOpMode {
         return new SequentialCommandGroup(
                 spinUp(),
                 new InstantCommand(() -> {
+                    shooter.stopPreshooter();
                     gate.close();
                     intake.stop();
-                }, gate, intake),
+                }, shooter, gate, intake),
                 new WaitUntilCommand(shooter::canOpenGate),
                 new RunCommand(() -> {
                     if (shooter.canOpenGate()) {
                         gate.open();
                         intake.runIntakeForShooting();
+                        shooter.runPreshooter();
                     } else {
+                        shooter.stopPreshooter();
                         gate.close();
                         intake.stop();
                     }
-                }, gate, intake).withTimeout((long) (Math.max(0.0, feedSeconds) * 1000))) {
+                }, shooter, gate, intake).withTimeout((long) (Math.max(0.0, feedSeconds) * 1000))) {
             @Override
             public void end(boolean interrupted) {
                 super.end(interrupted);

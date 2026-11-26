@@ -5,11 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Shared control mappings; reads the current gamepad state on every call.
- *
- * <p>Gamepad 1 (driver): driving, the splitter, the drive-to-shooting-position buttons and the
- * odometry reset. Gamepad 2 (operator): LB collects; RB spins up the shooter; RT runs the
- * shooter and feeds only when the gate can open. Intake (LB) and outtake (LT) work from either gamepad.
+ * Shared TeleOp controls; reads the current gamepad 1 state on every call.
  */
 public final class GamepadConfig {
     public static final double DRIVE_DEADBAND = 0.05;
@@ -19,26 +15,29 @@ public final class GamepadConfig {
     // Turn input multiplier: 0.0 disables turning, 1.0 uses full turn power.
     public static final double TURN_LIMIT = 0.7;
     private final Gamepad gamepad1;
-    private final Gamepad gamepad2;
 
-    public GamepadConfig(@NotNull final Gamepad gamepad1, @NotNull final Gamepad gamepad2) {
+    public GamepadConfig(@NotNull final Gamepad gamepad1) {
         this.gamepad1 = gamepad1;
-        this.gamepad2 = gamepad2;
     }
 
-    // ---------- Gamepad 1: driver ----------
-
-    /**
-     * LB on either gamepad (hold): intake. If one
-     * gamepad holds intake and the other outtake, intake wins.
-     */
+    /** LB (hold): intake. Takes priority over outtake. */
     public boolean isIntakeHeld() {
-        return gamepad1.left_bumper || gamepad2.left_bumper;
+        return gamepad1.left_bumper;
     }
 
-    /** LT on either gamepad (hold): outtake. */
+    /** LT (hold): outtake. */
     public boolean isOuttakeHeld() {
-        return gamepad1.left_trigger_pressed || gamepad2.left_trigger_pressed;
+        return gamepad1.left_trigger_pressed;
+    }
+
+    /** RB (hold): spin up the flywheel. */
+    public boolean isSpinUpHeld() {
+        return gamepad1.right_bumper;
+    }
+
+    /** RT (hold): spin up the flywheel and request feeding at speed. */
+    public boolean isFireHeld() {
+        return gamepad1.right_trigger_pressed;
     }
 
     public double getForward() {
@@ -53,22 +52,19 @@ public final class GamepadConfig {
         return gamepad1.right_stick_x;
     }
 
-    /** Gamepad 1 D-pad up (press): toggle Field-Centric's emergency robot-centric mode. */
+    /** D-pad right (press): switch between field-centric and robot-centric driving. */
     public boolean isDriveModeToggleHeld() {
+        return gamepad1.dpad_right;
+    }
+
+    /** D-pad up (press): lowers or raises the Flower splitter. */
+    public boolean isSplitterHeld() {
         return gamepad1.dpad_up;
     }
 
-    /** Gamepad 1 A: toggles the splitter down / up. */
-    public boolean isSplitterHeld() {
-        return gamepad1.a;
-    }
-
-    /**
-     * Gamepad 1 D-pad down (press): resets the odometry pose to the alliance's reset pose
-     * (Field-Centric only).
-     */
+    /** Y (press): resets odometry to the alliance's reset pose. */
     public boolean isResetPoseHeld() {
-        return gamepad1.dpad_down;
+        return gamepad1.y;
     }
 
     /** B: drive to the first shooting position (Field-Centric only). */
@@ -93,17 +89,5 @@ public final class GamepadConfig {
 
     public void rumble(int durationMs) {
         gamepad1.rumble(durationMs);
-    }
-
-    // ---------- Gamepad 2: operator ----------
-
-    /** Gamepad 2 RB (hold): runs the shooter only. */
-    public boolean isShootHeld() {
-        return gamepad2.right_bumper;
-    }
-
-    /** Gamepad 2 RT (hold): runs the shooter and feeds only when canOpenGate() is true. */
-    public boolean isFireHeld() {
-        return gamepad2.right_trigger_pressed;
     }
 }

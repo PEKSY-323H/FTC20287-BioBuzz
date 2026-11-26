@@ -29,8 +29,8 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
         gate = new Gate(hardwareMap);
-        controls = new GamepadConfig(gamepad1, gamepad2);
-        // Ignore A carried over from starting the OpMode; require release, then a fresh press.
+        controls = new GamepadConfig(gamepad1);
+        // Ignore D-pad up held at START; require release, then a fresh press.
         splitterButtonWasHeld = true;
         splitterDeployed = false;
         initializeDrive(controls);
@@ -53,7 +53,15 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
     public final void run() {
         beforeDriveRun();
 
-        // SubsystemBase auto-registers Shooter; the scheduler runs its PID periodic once.
+        boolean fireHeld = controls.isFireHeld();
+        boolean shooterRunning = fireHeld || controls.isSpinUpHeld();
+        if (shooterRunning) {
+            shooter.shoot();
+        } else {
+            shooter.stop();
+        }
+
+        // The scheduler updates the flywheel controller.
         super.run();
 
         boolean splitterHeld = controls.isSplitterHeld();
@@ -65,34 +73,25 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         }
         splitterButtonWasHeld = splitterHeld;
 
-        boolean fireHeld = controls.isFireHeld();
-        if (controls.isShootHeld() || fireHeld) {
-            shooter.shoot();
-        } else {
-            shooter.stop();
-        }
-
-        // Feed only while RT is held and the shooter permits the gate to open.
+        // Feed only while shooting is requested and the flywheel is fast enough.
         boolean gateOpen = fireHeld && shooter.canOpenGate();
 
         if (gateOpen) {
             gate.open();
+            intake.runIntakeForShooting();
+            shooter.runPreshooter();
         } else {
+            if (shooterRunning) {
+                shooter.stopPreshooter();
+            }
             gate.close();
-        }
-
-        if (fireHeld) {
-            if (gateOpen) {
-                intake.runIntakeForShooting();
+            if (!fireHeld && controls.isIntakeHeld()) {
+                intake.runIntake();
+            } else if (!fireHeld && controls.isOuttakeHeld()) {
+                intake.runOuttake();
             } else {
                 intake.stop();
             }
-        } else if (controls.isIntakeHeld()) {
-            intake.runIntake();
-        } else if (controls.isOuttakeHeld()) {
-            intake.runOuttake();
-        } else {
-            intake.stop();
         }
 
         addDriveTelemetry();

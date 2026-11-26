@@ -40,6 +40,10 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
     public static double BLUE_RESET_Y_IN = 0.0;
     public static double BLUE_RESET_HEADING_DEG = 0.0;
 
+    // Self-aim keeps its CELL until the robot is this far past the field midline (inches),
+    // so odometry noise near the middle cannot flip the turret between the two CELLS.
+    public static double CELL_SWITCH_MARGIN_IN = 6.0;
+
     protected Follower follower;
     private GamepadConfig controls;
     private Alliance alliance;
@@ -47,6 +51,8 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
     private boolean shoot1WasHeld;
     private boolean shoot2WasHeld;
     private boolean resetWasHeld;
+    private boolean cellChosen;
+    private boolean aimAudienceCell;
     private AutoHandoff handoff;
 
     /**
@@ -84,6 +90,7 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
         follower = Constants.create(hardwareMap);
         follower.setPose(startPose);
         follower.holdEnd.set(false);
+        cellChosen = false;
     }
 
     @Override
@@ -156,8 +163,23 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
             turret.lockTurret();
         }
         else if (robotPose != null) {
-            turret.aimAt(robotPose, Points.cellTarget(alliance, robotPose.y()));
+            turret.aimAt(robotPose, Points.cellTarget(alliance, chooseAudienceCell(robotPose.y())));
         }
+    }
+
+    /** Field half whose CELL to aim at, switching only once clearly past the midline. */
+    private boolean chooseAudienceCell(double fieldY) {
+        double midline = Alliance.FIELD_SIZE / 2;
+        double margin = Math.max(0.0, CELL_SWITCH_MARGIN_IN);
+        if (!cellChosen) {
+            aimAudienceCell = fieldY < midline;
+            cellChosen = true;
+        } else if (aimAudienceCell && fieldY > midline + margin) {
+            aimAudienceCell = false;
+        } else if (!aimAudienceCell && fieldY < midline - margin) {
+            aimAudienceCell = true;
+        }
+        return aimAudienceCell;
     }
 
     private Pose shootingTarget(boolean first) {

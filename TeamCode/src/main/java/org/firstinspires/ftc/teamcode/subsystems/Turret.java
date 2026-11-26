@@ -9,12 +9,14 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.jetbrains.annotations.NotNull;
 
 /** Controls the Axon Mini MK2 servo geared to the turret. */
 @Configurable
 public final class Turret extends SubsystemBase {
-    private static final double MAX_ANGLE_DEGREES = 90.0;
+    private static final double CENTER_ANGLE_DEGREES = 180.0;
+    private static final double MAX_OFFSET_DEGREES = 90.0;
     private static final double SERVO_TO_TURRET_RATIO = 1.8;
     // Nominal full sweep in Servo Mode with matching Axon programmer settings.
     private static final double SERVO_TRAVEL_DEGREES = 360.0;
@@ -23,7 +25,7 @@ public final class Turret extends SubsystemBase {
     private static final PwmControl.PwmRange SERVO_PWM_RANGE =
             new PwmControl.PwmRange(500, 2500);
 
-    // Logical servo position when the turret faces front.
+    // Logical servo position when the turret faces the rear of the robot.
     public static double CENTER_POSITION = 0.5;
     // Applied at construction to set the direction of positive angles.
     public static boolean REVERSED = false;
@@ -45,7 +47,7 @@ public final class Turret extends SubsystemBase {
     }
 
     public void center() {
-        setAngleDegrees(0.0);
+        setAngleDegrees(CENTER_ANGLE_DEGREES);
     }
 
     /** Aims from the robot pose origin in the team Pedro frame (inches, radians, CCW positive). */
@@ -58,25 +60,26 @@ public final class Turret extends SubsystemBase {
         if (!Double.isFinite(dx) || !Double.isFinite(dy) || (dx == 0.0 && dy == 0.0)) {
             return;
         }
-        double error = Math.atan2(dy, dx) - robotPose.heading();
-        setAngleDegrees(Math.toDegrees(Math.atan2(Math.sin(error), Math.cos(error))));
+        double robotRelativeBearing = Math.atan2(dy, dx) - robotPose.heading();
+        setAngleDegrees(Math.toDegrees(robotRelativeBearing));
     }
 
-    /** Requests an angle from robot front. Non-finite requests leave the current target in place. */
+    /** Requests a robot-relative angle, measured CCW from 0° front and limited to 90°–270°. */
     public void setAngleDegrees(double angleDegrees) {
         double centerPosition = CENTER_POSITION;
         if (!Double.isFinite(angleDegrees) || !isValidCenter(centerPosition)) {
             return;
         }
 
-        double limitedAngle = Range.clip(angleDegrees, -MAX_ANGLE_DEGREES, MAX_ANGLE_DEGREES);
-        double offset = Range.clip(limitedAngle / TURRET_DEGREES_PER_SERVO_RANGE,
+        double rearOffsetDegrees = AngleUnit.normalizeDegrees(angleDegrees % 360.0 - CENTER_ANGLE_DEGREES);
+        double limitedOffsetDegrees = Range.clip(rearOffsetDegrees, -MAX_OFFSET_DEGREES, MAX_OFFSET_DEGREES);
+        double offset = Range.clip(limitedOffsetDegrees / TURRET_DEGREES_PER_SERVO_RANGE,
                 -centerPosition, 1.0 - centerPosition);
         turret.setPosition(centerPosition + offset);
-        commandedAngleDegrees = offset * TURRET_DEGREES_PER_SERVO_RANGE;
+        commandedAngleDegrees = CENTER_ANGLE_DEGREES + offset * TURRET_DEGREES_PER_SERVO_RANGE;
     }
 
-    /** Returns the last commanded angle in degrees, or NaN before the first valid command. */
+    /** Returns the last commanded robot-relative angle, or NaN before the first valid command. */
     public double getCommandedAngleDegrees() {
         return commandedAngleDegrees;
     }

@@ -73,10 +73,11 @@ public final class Points {
         public static Point START_OUTSIDE_END_ZONE = new Point(12.0, 87.9, 0);
         /** Starting location for the Least routine. */
         public static Point START_2 = new Point(63.46, 132.8, 90);
-        public static Point SHOOT_1 = new Point(54.5, 16.5, 90);
+        // Shooting headings put the rear-facing turret toward the HIVE.
+        public static Point SHOOT_1 = new Point(54.5, 16.5, 270);
         public static Point FLOWER_PREP_1 = new Point(16.45, 48.54, 180);
         public static Point FLOWER_1 = new Point(9.5, 48.54, 180);
-        public static Point SHOOT_2 = new Point(55.4, 124.4, 270);
+        public static Point SHOOT_2 = new Point(55.4, 124.4, 90);
         public static Point FLOWER_PREP_2 = new Point(44.0157, 120.8268, 90);
         public static Point FLOWER_2 = new Point(45.08, 129.5945, 90);
         public static Point SHOOT_2_RETURN = new Point(58.05410766601562, 126.57603672572543, 90);

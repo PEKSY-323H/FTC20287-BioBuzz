@@ -35,7 +35,7 @@ public final class Shooter extends SubsystemBase {
     public static double PRESHOOTER_POWER = 0.8; // Signed open-loop power, tunable in Panels.
     private final DcMotorEx shooterLeft;
     private final DcMotorEx shooterRight;
-    private final DcMotor preshooter;
+    private final DcMotor preShooter;
     private final ElapsedTime loopTimer = new ElapsedTime();
     private double commandedVelocity;
     private double measuredVelocity;
@@ -49,7 +49,7 @@ public final class Shooter extends SubsystemBase {
     public Shooter(@NotNull final HardwareMap hMap) {
         shooterLeft = hMap.get(DcMotorEx.class, "shooterLeft");
         shooterRight = hMap.get(DcMotorEx.class, "shooterRight");
-        preshooter = hMap.get(DcMotor.class, "preshooter");
+        preShooter = hMap.get(DcMotor.class, "preShooter");
 
         shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,10 +59,10 @@ public final class Shooter extends SubsystemBase {
         shooterRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooterRight.setPower(0.0);
 
-        preshooter.setPower(0.0);
-        preshooter.setDirection(DcMotorSimple.Direction.FORWARD);
-        preshooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        preshooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        preShooter.setPower(0.0);
+        preShooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        preShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        preShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         usingPid = USE_PID;
         usingF = USE_F;
@@ -80,11 +80,11 @@ public final class Shooter extends SubsystemBase {
     // Call after checking shooter speed and opening the gate for feeding.
     public void runPreshooter() {
         double power = PRESHOOTER_POWER;
-        preshooter.setPower(Double.isFinite(power) ? Math.max(-1.0, Math.min(1.0, power)) : 0.0);
+        preShooter.setPower(Double.isFinite(power) ? Math.max(-1.0, Math.min(1.0, power)) : 0.0);
     }
 
     public void stopPreshooter() {
-        preshooter.setPower(0.0);
+        preShooter.setPower(0.0);
     }
 
     public void setVelocity(double velocity) {

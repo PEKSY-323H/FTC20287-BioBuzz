@@ -48,32 +48,27 @@ public final class Constants {
 
     public static ForesightConfig foresightConfig = new ForesightConfig(
             c -> {
-                // Conservative starting limits: the rear wheels lifted during the line test.
-                // Reduce approach speed and opposing motor power before retesting braking.
-                c.maxVelocityConstraint.set(70.0);     // inches/s
-                c.maxBrakingPower.set(0.1);
-
-                Controller primaryTranslationalForward = Controller.proportional(0.23372204768170443);
-                Controller secondaryTranslationalForward = Controller.proportional(0.08635405145025682);
-                Controller primaryTranslationalLateral = Controller.proportional(0.36505318684010185);
-                Controller secondaryTranslationalLateral = Controller.proportional(0.1348773981366159);
+                Controller primaryTranslationalForward = Controller.proportional(0.264867697030224);
+                Controller secondaryTranslationalForward = Controller.proportional(0.09786153665745687);
+                Controller primaryTranslationalLateral = Controller.proportional(0.5503136735081704);
+                Controller secondaryTranslationalLateral = Controller.proportional(0.20332619770909333);
 
                 c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
                 c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
 
-                c.coast.set(Controller.proportionalFeedforward(0.01129890090250132));
-                c.brake.set(Controller.proportionalFeedforward(0.009604065767126123));
+                c.coast.set(Controller.proportionalFeedforward(0.01402256191176626));
+                c.brake.set(Controller.proportionalFeedforward(0.011919177625001321));
 
-                c.headingFeedback.set(Controller.proportional(3.2878116355549833));
-                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.06719381319638153, 0.003161863919029447));
+                c.headingFeedback.set(Controller.proportional(4.137789836614438));
+                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.049935590010808904, 0.00420192781143353));
 
-                c.linearBrakeCoefficients.set(Matrix.diag(0.09682320833335036, 0.04511120840579613));
-                c.quadraticBrakeCoefficients.set(Matrix.diag(3.065463350559885E-4, 0.00170514316641828));
+                c.linearBrakeCoefficients.set(Matrix.diag(0.006998293018999701, 0.01129235034235655));
+                c.quadraticBrakeCoefficients.set(Matrix.diag(4.9166986468482844E-5, -2.8424983050998285E-5));
 
-                c.maxAchievableForwardVelocity.set(82.06769753057878);
-                c.maxAchievableStrafeVelocity.set(69.95459700382189);
-                c.naturalForwardDeceleration.set(55.55486577157712);
-                c.naturalStrafeDeceleration.set(78.47823301503256);
+                c.maxAchievableForwardVelocity.set(75.45876123355895);
+                c.maxAchievableStrafeVelocity.set(62.26267301547017);
+                c.naturalForwardDeceleration.set(40.82473725159998);
+                c.naturalStrafeDeceleration.set(81.12802669435408);
             }
     );
 
@@ -100,14 +95,14 @@ public final class Constants {
         c.xPodPort.set(1);
         c.yPodPort.set(0);
         c.ticksPerUnit.set(505.316944406);
-        c.xPodOffset.set(4.094488188976378);
-        c.yPodOffset.set(-1.988188976377953);
-        c.xPodDirection.set(OctoQuad.EncoderDirection.REVERSE);
-        c.yPodDirection.set(OctoQuad.EncoderDirection.FORWARD);
+        c.xPodOffset.set(-3.484251968503937);
+        c.yPodOffset.set(-6.338582677165355);
+        c.xPodDirection.set(OctoQuad.EncoderDirection.FORWARD);
+        c.yPodDirection.set(OctoQuad.EncoderDirection.REVERSE);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
         c.offsetUnits.set(DistanceUnit.INCH);
         c.i2cRecoveryMode.set(OctoQuad.I2cRecoveryMode.MODE_1_PERIPH_RST_ON_FRAME_ERR);
-        c.headingScalar.set(1.012570131791675);
+        c.headingScalar.set(1.0079471955361563);
     });
 
     /** The configured localizer on its own; also what pedro/Tuning hands to the tuners. */

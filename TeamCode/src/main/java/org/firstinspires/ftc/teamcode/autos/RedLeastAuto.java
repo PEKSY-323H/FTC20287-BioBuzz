@@ -52,7 +52,6 @@ public final class RedLeastAuto extends BaseAuto {
         Pose shoot2 = redPose(Red.SHOOT_2);
         Pose park = redPose(Red.STOP_2);
 
-        // Turns toward the CELL while following the approach.
         Path startToShoot2 = line(start, shoot2);
         // Turns from the shooting heading to STOP_2's heading on the way in.
         Path shoot2ToPark = line(shoot2, park);

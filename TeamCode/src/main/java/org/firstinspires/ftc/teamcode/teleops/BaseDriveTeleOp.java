@@ -56,14 +56,6 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
     public final void run() {
         beforeDriveRun();
 
-        boolean fireHeld = controls.isFireHeld();
-        boolean shooterRunning = fireHeld || controls.isSpinUpHeld();
-        if (shooterRunning) {
-            shooter.shoot();
-        } else {
-            shooter.stop();
-        }
-
         // The scheduler updates the flywheel controller.
         super.run();
 
@@ -77,7 +69,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         splitterButtonWasHeld = splitterHeld;
 
         boolean fireHeld = controls.isFireHeld();
-        if (controls.isShootHeld() || fireHeld) {
+        if (controls.isSpinUpHeld() || fireHeld) {
             shooter.shoot();
             aimTurret(turret);
         } else {
@@ -93,7 +85,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
             intake.runIntakeForShooting();
             shooter.runPreshooter();
         } else {
-            if (shooterRunning) {
+            if (controls.isSpinUpHeld() || fireHeld) {
                 shooter.stopPreshooter();
             }
             gate.close();

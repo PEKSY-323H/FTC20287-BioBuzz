@@ -69,7 +69,7 @@ public final class BlueFullAuto extends BaseAuto {
         Pose flower2 = bluePose(Blue.FLOWER_2);
         Pose park = bluePose(Blue.STOP_1);
 
-        Path start1ToShoot1 = line(start1, shoot1, Interpolator.constant(shoot1.heading()));
+        Path start1ToShoot1 = line(start1, shoot1);
         Path shoot1ToFlowerPrep1 = line(shoot1, flowerPrep1,
                 Interpolator.linear(shoot1.heading(), flowerPrep1.heading()));
         Path flowerPrep1ToFlower1 = line(flowerPrep1, flower1,
@@ -79,10 +79,9 @@ public final class BlueFullAuto extends BaseAuto {
                 bluePose(Blue.FLOWER_1_TO_SHOOT_2_CTRL_B), shoot2)
                 .heading(Interpolator.piecewise()
                         .until(0.3,
-                                Interpolator.linear(flower1.heading(), Math.toRadians(-90)))
+                                Interpolator.linear(flower1.heading(), shoot2.heading()))
                         .until(1.0, Interpolator.constant(shoot2.heading())));
-        Path shoot2ToFlowerPrep2 = line(shoot2, flowerPrep2,
-                Interpolator.constant(flowerPrep2.heading()));
+        Path shoot2ToFlowerPrep2 = line(shoot2, flowerPrep2);
         Path flowerPrep2ToFlower2 = line(flowerPrep2, flower2,
                 Interpolator.constant(flower2.heading()));
         // Headings go from each point's heading to the next one's.
@@ -94,27 +93,30 @@ public final class BlueFullAuto extends BaseAuto {
                         intakeSlow(),
                         // 1. Preload at shooting position 1.
                         spinUp(),
-                        follow(start1ToShoot1),
-                        settleAt(shoot1),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot1,
+                                follow(start1ToShoot1),
+                                settleAt(shoot1),
+                                shoot(SHOOT_SECONDS)),
                         // 2. FLOWER 1: splitter down on the way to the prep point.
                         lowerSplitterWhileFollowing(shoot1ToFlowerPrep1, DEFAULT_PATH_TIMEOUT_MS),
                         collectAtFlower(flowerPrep1ToFlower1),
                         // 3. Shooting position 2 (the splitter stays down).
                         spinUp(),
-                        follow(flower1ToShoot2, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
-                        settleAt(shoot2),
-                        new WaitCommand((long) (WAIT_BEFORE_SHOOT_2_SECONDS * 1000)),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot2,
+                                follow(flower1ToShoot2, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
+                                settleAt(shoot2),
+                                new WaitCommand((long) (WAIT_BEFORE_SHOOT_2_SECONDS * 1000)),
+                                shoot(SHOOT_SECONDS)),
                         // 4. FLOWER 2 (the splitter is still down).
                         follow(shoot2ToFlowerPrep2),
                         collectAtFlower(flowerPrep2ToFlower2),
                         // 5. Back to shooting position 2.
                         spinUp(),
-                        follow(flower2ToShoot2),
-                        settleAt(shoot2),
-                        new WaitCommand((long) (WAIT_BEFORE_SHOOT_2_SECONDS * 1000)),
-                        shoot(SHOOT_SECONDS)), PARK_RESERVE_SECONDS),
+                        aimWhileShooting(shoot2,
+                                follow(flower2ToShoot2),
+                                settleAt(shoot2),
+                                new WaitCommand((long) (WAIT_BEFORE_SHOOT_2_SECONDS * 1000)),
+                                shoot(SHOOT_SECONDS))), PARK_RESERVE_SECONDS),
                 // If the cutoff hit before a shoot() finished, the flywheel is still spinning.
                 new InstantCommand(shooter::stop, shooter),
                 intakeOff(),

@@ -9,6 +9,7 @@ import com.pedropathing.paths.interpolator.Interpolator;
 import org.firstinspires.ftc.teamcode.autos.Points;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadConfig;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.Alliance;
 import org.firstinspires.ftc.teamcode.utils.AutoHandoff;
 
@@ -146,6 +147,14 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
             driveManually(forward, lateral, turn);
         }
         follower.update();
+    }
+
+    @Override
+    protected final void aimTurret(Turret turret) {
+        Pose robotPose = follower.pose();
+        if (robotPose != null) {
+            turret.aimAt(robotPose, Points.cellTarget(alliance, robotPose.y()));
+        }
     }
 
     private Pose shootingTarget(boolean first) {

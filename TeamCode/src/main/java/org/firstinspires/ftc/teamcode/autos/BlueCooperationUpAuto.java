@@ -52,14 +52,11 @@ public final class BlueCooperationUpAuto extends BaseAuto {
         Pose flower2 = bluePose(Blue.FLOWER_2);
         Pose park = bluePose(Blue.STOP_2);
 
-        Path start2ToShoot2 = curve(start, bluePose(Blue.START_2_TO_SHOOT_2_CTRL), shoot2,
-                Interpolator.constant(shoot2.heading()));
-        Path shoot2ToFlowerPrep2 = line(shoot2, flowerPrep2,
-                Interpolator.constant(flowerPrep2.heading()));
+        Path start2ToShoot2 = curve(start, bluePose(Blue.START_2_TO_SHOOT_2_CTRL), shoot2);
+        Path shoot2ToFlowerPrep2 = line(shoot2, flowerPrep2);
         Path flowerPrep2ToFlower2 = line(flowerPrep2, flower2,
                 Interpolator.constant(flower2.heading()));
-        Path flower2ToShoot2 = curve(flower2, bluePose(Blue.FLOWER_2_TO_SHOOT_2_CTRL), shoot2,
-                Interpolator.constant(shoot2.heading()));
+        Path flower2ToShoot2 = curve(flower2, bluePose(Blue.FLOWER_2_TO_SHOOT_2_CTRL), shoot2);
         Path shoot2ToStop2 = line(shoot2, park,
                 Interpolator.piecewise()
                         .until(0.5, Interpolator.linear(shoot2.heading(), park.heading()))
@@ -69,10 +66,11 @@ public final class BlueCooperationUpAuto extends BaseAuto {
                 untilSecondsLeft(new SequentialCommandGroup(
                         intakeSlow(),
                         spinUp(),
-                        follow(start2ToShoot2, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
-                        settleAt(shoot2),
-                        waitSeconds(WAIT_BEFORE_FIRST_SHOOT_SECONDS),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot2,
+                                follow(start2ToShoot2, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
+                                settleAt(shoot2),
+                                waitSeconds(WAIT_BEFORE_FIRST_SHOOT_SECONDS),
+                                shoot(SHOOT_SECONDS)),
                         lowerSplitter(),
                         follow(shoot2ToFlowerPrep2),
                         new WaitUntilCommand(() -> splitterDown && !intake.isSplitterMoving()),
@@ -81,10 +79,11 @@ public final class BlueCooperationUpAuto extends BaseAuto {
                         waitSeconds(FLOWER_SECONDS),
                         intakeSlow(),
                         spinUp(),
-                        follow(flower2ToShoot2, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
-                        settleAt(shoot2),
-                        waitSeconds(WAIT_BEFORE_SHOOT_SECONDS),
-                        shoot(SHOOT_SECONDS)), PARK_RESERVE_SECONDS),
+                        aimWhileShooting(shoot2,
+                                follow(flower2ToShoot2, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
+                                settleAt(shoot2),
+                                waitSeconds(WAIT_BEFORE_SHOOT_SECONDS),
+                                shoot(SHOOT_SECONDS))), PARK_RESERVE_SECONDS),
                 new InstantCommand(shooter::stop, shooter),
                 intakeOff(),
                 new InstantCommand(() -> {

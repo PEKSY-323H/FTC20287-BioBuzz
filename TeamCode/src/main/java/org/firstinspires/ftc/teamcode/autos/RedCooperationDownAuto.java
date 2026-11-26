@@ -60,7 +60,7 @@ public final class RedCooperationDownAuto extends BaseAuto {
         Pose garden = redPose(Red.GARDEN);
         Pose park = redPose(Red.STOP_1);
 
-        Path start1ToShoot1 = line(start, shoot1, Interpolator.constant(shoot1.heading()));
+        Path start1ToShoot1 = line(start, shoot1);
         Path shoot1ToFlowerPrep1 = line(shoot1, flowerPrep1);
         Path flowerPrep1ToFlower1 = line(flowerPrep1, flower1,
                 Interpolator.constant(flower1.heading()));
@@ -85,19 +85,21 @@ public final class RedCooperationDownAuto extends BaseAuto {
                 untilSecondsLeft(new SequentialCommandGroup(
                         intakeSlow(),
                         spinUp(),
-                        follow(start1ToShoot1),
-                        settleAt(shoot1),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot1,
+                                follow(start1ToShoot1),
+                                settleAt(shoot1),
+                                shoot(SHOOT_SECONDS)),
                         follow(shoot1ToGardenPrep),
                         intakeOn(),
                         follow(gardenPrepToGarden),
                         waitSeconds(GARDEN_SECONDS),
                         intakeSlow(),
                         spinUp(),
-                        follow(gardenToShoot1, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
-                        settleAt(shoot1),
-                        waitSeconds(WAIT_AFTER_GARDEN_TO_SHOOT_1_SECONDS),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot1,
+                                follow(gardenToShoot1, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
+                                settleAt(shoot1),
+                                waitSeconds(WAIT_AFTER_GARDEN_TO_SHOOT_1_SECONDS),
+                                shoot(SHOOT_SECONDS)),
                         lowerSplitter(),
                         follow(shoot1ToFlowerPrep1),
                         // As in Full Auto, never enter the FLOWER before deployment completes.
@@ -107,9 +109,10 @@ public final class RedCooperationDownAuto extends BaseAuto {
                         waitSeconds(FLOWER_SECONDS),
                         intakeSlow(),
                         spinUp(),
-                        follow(flower1ToShoot1, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
-                        settleAt(shoot1),
-                        shoot(SHOOT_SECONDS)), PARK_RESERVE_SECONDS),
+                        aimWhileShooting(shoot1,
+                                follow(flower1ToShoot1, PATH_SPEED_FRACTION, LONG_PATH_TIMEOUT_MS),
+                                settleAt(shoot1),
+                                shoot(SHOOT_SECONDS))), PARK_RESERVE_SECONDS),
                 // The cutoff can interrupt a spin-up before shoot() gets to stop it.
                 new InstantCommand(shooter::stop, shooter),
                 intakeOff(),

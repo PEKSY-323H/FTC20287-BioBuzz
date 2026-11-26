@@ -34,7 +34,7 @@ public final class BlueShoot1Auto extends BaseAuto {
         Pose start = startPose();
         Pose shoot1 = bluePose(Blue.SHOOT_1);
         Pose park = bluePose(Blue.STOP_1);
-        Path startToShoot1 = line(start, shoot1, Interpolator.constant(shoot1.heading()));
+        Path startToShoot1 = line(start, shoot1);
         Path shoot1ToStop1 = curve(shoot1, bluePose(Blue.SHOOT_1_TO_STOP_1_CTRL), park,
                 Interpolator.piecewise()
                         .until(0.7, Interpolator.constant(shoot1.heading()))
@@ -44,9 +44,10 @@ public final class BlueShoot1Auto extends BaseAuto {
                 untilSecondsLeft(new SequentialCommandGroup(
                         intakeSlow(),
                         spinUp(),
-                        follow(startToShoot1),
-                        settleAt(shoot1),
-                        shoot(SHOOT_SECONDS)), PARK_RESERVE_SECONDS),
+                        aimWhileShooting(shoot1,
+                                follow(startToShoot1),
+                                settleAt(shoot1),
+                                shoot(SHOOT_SECONDS))), PARK_RESERVE_SECONDS),
                 // Also stop a spin-up interrupted before shoot() begins.
                 new InstantCommand(shooter::stop, shooter),
                 intakeOff(),

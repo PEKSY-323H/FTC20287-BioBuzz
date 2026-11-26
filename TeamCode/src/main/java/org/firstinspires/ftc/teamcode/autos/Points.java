@@ -34,6 +34,15 @@ public final class Points {
         };
     }
 
+    /** Selects the alliance's CELL in the audience or scoring half of the Pedro field. */
+    public static Pose cellTarget(Alliance alliance, double fieldY) {
+        boolean audienceHalf = fieldY < Alliance.FIELD_SIZE / 2;
+        if (alliance == Alliance.BLUE) {
+            return (audienceHalf ? Blue.CELL_AUDIENCE : Blue.CELL_SCORING).toPose();
+        }
+        return (audienceHalf ? Red.CELL_AUDIENCE : Red.CELL_SCORING).toPose();
+    }
+
     /** A field point Panels can edit (unlike Pedro's immutable {@link Pose}). */
     public static final class Point implements PoseSource {
         public double x;
@@ -64,10 +73,10 @@ public final class Points {
         public static Point START_OUTSIDE_END_ZONE = new Point(12.0, 87.9, 0);
         /** Starting location for the Least routine. */
         public static Point START_2 = new Point(63.46, 132.8, 90);
-        public static Point SHOOT_1 = new Point(54.5, 16.5, 270);
+        public static Point SHOOT_1 = new Point(54.5, 16.5, 90);
         public static Point FLOWER_PREP_1 = new Point(16.45, 48.54, 180);
         public static Point FLOWER_1 = new Point(9.5, 48.54, 180);
-        public static Point SHOOT_2 = new Point(55.4, 124.4, 90);
+        public static Point SHOOT_2 = new Point(55.4, 124.4, 270);
         public static Point FLOWER_PREP_2 = new Point(44.0157, 120.8268, 90);
         public static Point FLOWER_2 = new Point(45.08, 129.5945, 90);
         public static Point SHOOT_2_RETURN = new Point(58.05410766601562, 126.57603672572543, 90);
@@ -77,6 +86,11 @@ public final class Points {
         public static Point STOP_1 = new Point(9.43345642089844, 96.21348135811941, 0);
         /** Parking location inside the RED LOADING ZONE. */
         public static Point STOP_2 = new Point(11, 118.66, 0);
+
+        // Estimated opening centers with the corresponding CELL up. Heading is unused.
+        // FIRST manual Fig. 9-10 puts the HIVE centerlines 25.5 inches apart.
+        public static Point CELL_AUDIENCE = new Point(58.0, 53.0, 0);
+        public static Point CELL_SCORING = new Point(58.0, 88.5, 0);
 
         // ---------- Bezier control points ----------
         /** start2 → shoot2, from RedCooperateUp.pp.json. */
@@ -115,6 +129,8 @@ public final class Points {
         public static final PoseSource SHOOT_1_RETURN = blue(() -> Red.SHOOT_1_RETURN);
         public static final PoseSource STOP_1 = blue(() -> Red.STOP_1);
         public static final PoseSource STOP_2 = blue(() -> Red.STOP_2);
+        public static final PoseSource CELL_AUDIENCE = blue(() -> Red.CELL_SCORING);
+        public static final PoseSource CELL_SCORING = blue(() -> Red.CELL_AUDIENCE);
         public static final PoseSource START_2_TO_SHOOT_2_CTRL = blue(() -> Red.START_2_TO_SHOOT_2_CTRL);
         public static final PoseSource FLOWER_1_TO_SHOOT_2_CTRL_A = blue(() -> Red.FLOWER_1_TO_SHOOT_2_CTRL_A);
         public static final PoseSource FLOWER_1_TO_SHOOT_2_CTRL_B = blue(() -> Red.FLOWER_1_TO_SHOOT_2_CTRL_B);

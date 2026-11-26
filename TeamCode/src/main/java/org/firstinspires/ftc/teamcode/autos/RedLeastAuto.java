@@ -52,7 +52,7 @@ public final class RedLeastAuto extends BaseAuto {
         Pose shoot2 = redPose(Red.SHOOT_2);
         Pose park = redPose(Red.STOP_2);
 
-        // Heading goes from START_2's to SHOOT_2's; both default to 90, so the robot only translates.
+        // Turns toward the CELL while following the approach.
         Path startToShoot2 = line(start, shoot2);
         // Turns from the shooting heading to STOP_2's heading on the way in.
         Path shoot2ToPark = line(shoot2, park);
@@ -61,9 +61,11 @@ public final class RedLeastAuto extends BaseAuto {
                 untilSecondsLeft(new SequentialCommandGroup(
                         intakeSlow(),
                         spinUp(),
-                        follow(startToShoot2),
-                        waitSeconds(WAIT_BEFORE_SHOOT_SECONDS),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot2,
+                                follow(startToShoot2),
+                                settleAt(shoot2),
+                                waitSeconds(WAIT_BEFORE_SHOOT_SECONDS),
+                                shoot(SHOOT_SECONDS)),
                         waitSeconds(WAIT_BEFORE_PARK_SECONDS)), PARK_RESERVE_SECONDS),
                 // If the cutoff hit before shoot() ran, the flywheel is still spinning.
                 new InstantCommand(shooter::stop, shooter),

@@ -44,7 +44,7 @@ public final class BlueCooperationDownParkAuto extends BaseAuto {
         Pose flowerPrep1 = bluePose(Blue.FLOWER_PREP_1);
         Pose flower1 = bluePose(Blue.FLOWER_1);
         Pose park = bluePose(Blue.STOP_1);
-        Path startToShoot1 = line(startPose(), shoot1, Interpolator.constant(shoot1.heading()));
+        Path startToShoot1 = line(startPose(), shoot1);
         Path shoot1ToFlowerPrep1 = line(shoot1, flowerPrep1);
         Path flowerPrep1ToFlower1 = line(flowerPrep1, flower1,
                 Interpolator.constant(flower1.heading()));
@@ -53,9 +53,10 @@ public final class BlueCooperationDownParkAuto extends BaseAuto {
                 untilSecondsLeft(new SequentialCommandGroup(
                         intakeSlow(),
                         spinUp(),
-                        follow(startToShoot1),
-                        settleAt(shoot1),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot1,
+                                follow(startToShoot1),
+                                settleAt(shoot1),
+                                shoot(SHOOT_SECONDS)),
                         new WaitUntilCommand(() -> !intake.isSplitterMoving()),
                         new InstantCommand(() -> {
                             if (intake.deploySplitter()) {

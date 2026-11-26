@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.GamepadConfig;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 
 /** Shared hardware, controls, and lifecycle for drive TeleOps. */
 public abstract class BaseDriveTeleOp extends CommandOpMode {
@@ -16,6 +17,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
     private Shooter shooter;
     private Intake intake;
     private Gate gate;
+    private Turret turret;
     private GamepadConfig controls;
     private boolean splitterButtonWasHeld;
     private boolean splitterDeployed;
@@ -29,6 +31,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
         gate = new Gate(hardwareMap);
+        turret = new Turret(hardwareMap, false);
         controls = new GamepadConfig(gamepad1);
         // Ignore D-pad up held at START; require release, then a fresh press.
         splitterButtonWasHeld = true;
@@ -73,6 +76,15 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         }
         splitterButtonWasHeld = splitterHeld;
 
+        boolean fireHeld = controls.isFireHeld();
+        if (controls.isShootHeld() || fireHeld) {
+            shooter.shoot();
+            aimTurret(turret);
+        } else {
+            shooter.stop();
+            turret.center();
+        }
+
         // Feed only while shooting is requested and the flywheel is fast enough.
         boolean gateOpen = fireHeld && shooter.canOpenGate();
 
@@ -101,6 +113,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
         telemetry.addData("Shooter Left Velocity Actual", shooter.getLeftVelocity());
         telemetry.addData("Shooter Right Velocity Actual", shooter.getRightVelocity());
         telemetry.addData("Shooter Encoder Mismatch", shooter.isEncoderMismatch());
+        telemetry.addData("Turret angle command (deg)", turret.getCommandedAngleDegrees());
         telemetry.addData("Intake Power Command", intake.getCommandedPower());
         telemetry.addData("Intake Power Actual", intake.getPower());
         telemetry.addData("Splitter rotation command", splitterDeployed ? "deploy" : "retract / initially stopped");
@@ -113,6 +126,8 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
 
     protected void beforeDriveRun() {
     }
+
+    protected abstract void aimTurret(Turret turret);
 
     protected abstract void stopDrive();
 

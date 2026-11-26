@@ -13,6 +13,7 @@ import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelDeadlineGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitUntilCommand;
@@ -24,6 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.PathFollower;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.Alliance;
 import org.firstinspires.ftc.teamcode.utils.AutoHandoff;
 
@@ -79,6 +81,7 @@ public abstract class BaseAuto extends CommandOpMode {
     protected Shooter shooter;
     protected Intake intake;
     protected Gate gate;
+    private Turret turret;
     private final ElapsedTime autoTimer = new ElapsedTime();
     private final Set<String> setupWarnings = new LinkedHashSet<>();
     private Pose startFieldPose;
@@ -116,6 +119,7 @@ public abstract class BaseAuto extends CommandOpMode {
         intake = new Intake(hardwareMap);
         // The gate servo closes here, inside the starting configuration; nothing else moves.
         gate = new Gate(hardwareMap);
+        turret = null;
         routine = buildRoutine();
     }
 
@@ -160,6 +164,9 @@ public abstract class BaseAuto extends CommandOpMode {
         telemetry.addData("Path completion", follower.getCompletion());
         telemetry.addData("Shooter Velocity Command", shooter.getCommandedVelocity());
         telemetry.addData("Shooter Encoder Mismatch", shooter.isEncoderMismatch());
+        if (turret != null) {
+            telemetry.addData("Turret angle command (deg)", turret.getCommandedAngleDegrees());
+        }
         telemetry.addData("Intake Power Command", intake.getCommandedPower());
         telemetry.addData("Gate Position Command", gate.getPosition());
         addWarningTelemetry();
@@ -292,6 +299,17 @@ public abstract class BaseAuto extends CommandOpMode {
         return new FollowPathCommand(follower.getFollower(), path, speedFraction)
                 .addRequirements(follower)
                 .withTimeout(timeoutMs);
+    }
+
+    /** Tracks the destination half's CELL during the approach, settling and shooting. */
+    protected final Command aimWhileShooting(Pose destination, Command... shootingSequence) {
+        if (turret == null) {
+            turret = new Turret(hardwareMap, false);
+        }
+        Turret aimingTurret = turret;
+        return new ParallelDeadlineGroup(new SequentialCommandGroup(shootingSequence),
+                new RunCommand(() -> aimingTurret.aimAt(follower.getPose(),
+                        Points.cellTarget(alliance, destination.y())), aimingTurret));
     }
 
     /** Turns in place to a BLUE-side field heading in degrees (converted for RED). */

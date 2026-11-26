@@ -62,9 +62,11 @@ public final class BlueLeastAuto extends BaseAuto {
                 untilSecondsLeft(new SequentialCommandGroup(
                         intakeSlow(),
                         spinUp(),
-                        follow(startToShoot2),
-                        waitSeconds(WAIT_BEFORE_SHOOT_SECONDS),
-                        shoot(SHOOT_SECONDS),
+                        aimWhileShooting(shoot2,
+                                follow(startToShoot2),
+                                settleAt(shoot2),
+                                waitSeconds(WAIT_BEFORE_SHOOT_SECONDS),
+                                shoot(SHOOT_SECONDS)),
                         waitSeconds(WAIT_BEFORE_PARK_SECONDS)), PARK_RESERVE_SECONDS),
                 // If the cutoff hit before shoot() ran, the flywheel is still spinning.
                 new InstantCommand(shooter::stop, shooter),

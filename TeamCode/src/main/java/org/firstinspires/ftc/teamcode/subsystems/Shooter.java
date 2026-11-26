@@ -19,20 +19,20 @@ public final class Shooter extends SubsystemBase {
     public static boolean USE_PID = true;
     // Custom PID gains produce motor power from ticks/s error. Tune in Panels;
     // Hub PIDF tuner coefficients are incompatible. Zeros leave the motor off.
-    public static double VELOCITY_P = 0.004;
+    public static double VELOCITY_P = 0.0045;//original 0.004
     public static double VELOCITY_I = 0;
     public static double VELOCITY_D = 0;
     // Feedforward adds VELOCITY_F * target ticks/s to the PID power. Start near
     // 1 / (full-power ticks/s), e.g. 1 / 2800 ≈ 0.00036, then lower I.
     public static boolean USE_F = true;
-    public static double VELOCITY_F = 0.00036;
+    public static double VELOCITY_F = 0.00041;//original 0.00036
     // Flag the encoders when they disagree by more than this fraction of the
     // faster reading; below the minimum speed the ratio is too noisy to judge.
     public static double ENCODER_MISMATCH_RATIO = 0.2;
     public static double ENCODER_CHECK_MIN_VELOCITY = 300;
     // isAtSpeed() passes when the measured speed is within this many ticks/s of the target.
     public static double OPEN_GATE_TOLERANCE = 100;
-    public static double PRESHOOTER_POWER = 0.8; // Signed open-loop power, tunable in Panels.
+    public static double PRESHOOTER_POWER = Intake.SHOOT_INTAKE_POWER; // Signed open-loop power, tunable in Panels.
     private final DcMotorEx shooterLeft;
     private final DcMotorEx shooterRight;
     private final DcMotor preShooter;
@@ -47,15 +47,15 @@ public final class Shooter extends SubsystemBase {
     private boolean encoderMismatch;
 
     public Shooter(@NotNull final HardwareMap hMap) {
-        shooterLeft = hMap.get(DcMotorEx.class, "shooterLeft");
+        shooterLeft = hMap.get(DcMotorEx.class, "shooter");
         shooterRight = hMap.get(DcMotorEx.class, "shooterRight");
         preShooter = hMap.get(DcMotor.class, "preShooter");
 
-        shooterLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooterLeft.setPower(0.0);
 
-        shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterRight.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooterRight.setPower(0.0);
 
@@ -86,7 +86,12 @@ public final class Shooter extends SubsystemBase {
     public void stopPreshooter() {
         preShooter.setPower(0.0);
     }
-
+    public void preshooterForIntake(){
+        preShooter.setPower(0.3);
+    }
+    public void preshooterForOuttake(){
+        preShooter.setPower(-0.5);
+    }
     public void setVelocity(double velocity) {
         updateControlMode();
         if (velocity == 0.0) {

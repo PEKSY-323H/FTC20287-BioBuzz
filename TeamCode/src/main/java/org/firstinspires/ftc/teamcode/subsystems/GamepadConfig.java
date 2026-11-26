@@ -52,6 +52,10 @@ public final class GamepadConfig {
         return gamepad1.right_stick_x;
     }
 
+    public boolean isTurretLock(){
+        return gamepad1.dpad_left;
+    }
+
     /** D-pad right (press): switch between field-centric and robot-centric driving. */
     public boolean isDriveModeToggleHeld() {
         return gamepad1.dpad_right;

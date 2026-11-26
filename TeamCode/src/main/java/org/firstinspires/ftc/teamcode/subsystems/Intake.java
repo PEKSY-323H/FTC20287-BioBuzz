@@ -16,7 +16,7 @@ public final class Intake extends SubsystemBase {
     // Shared commanded power, limited to [-1, 1] by setPower(); tune in Panels.
     public static double INTAKE_POWER = 1.0;
     // Shared shooting/feed power for every auto and TeleOp; collection uses INTAKE_POWER.
-    public static double SHOOT_INTAKE_POWER = 0.8;
+    public static double SHOOT_INTAKE_POWER = 1;
     // Holds collected POLLEN in the intake while driving to a shooting position.
     public static double INTAKE_SLOW_POWER = 0.25;
     public static double OUTTAKE_POWER = -1.0;
@@ -51,6 +51,7 @@ public final class Intake extends SubsystemBase {
     /** Shared feed power, independent of collection and loaded transport power. */
     public void runIntakeForShooting() {
         setPower(SHOOT_INTAKE_POWER);
+
     }
 
     public void runIntakeSlow() {

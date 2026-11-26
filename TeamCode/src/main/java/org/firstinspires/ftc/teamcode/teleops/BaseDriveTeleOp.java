@@ -82,6 +82,7 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
 
         if (gateOpen) {
             gate.open();
+
             intake.runIntakeForShooting();
             shooter.runPreshooter();
         } else {
@@ -91,10 +92,13 @@ public abstract class BaseDriveTeleOp extends CommandOpMode {
             gate.close();
             if (!fireHeld && controls.isIntakeHeld()) {
                 intake.runIntake();
+                shooter.preshooterForIntake();
             } else if (!fireHeld && controls.isOuttakeHeld()) {
                 intake.runOuttake();
+                shooter.preshooterForOuttake();
             } else {
                 intake.stop();
+                shooter.stopPreshooter();
             }
         }
 

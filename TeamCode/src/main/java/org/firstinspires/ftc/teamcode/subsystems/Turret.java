@@ -87,4 +87,8 @@ public final class Turret extends SubsystemBase {
     private static boolean isValidCenter(double position) {
         return position >= 0.0 && position <= 1.0;
     }
+
+    public void lockTurret(){
+        setAngleDegrees(CENTER_ANGLE_DEGREES);
+    }
 }

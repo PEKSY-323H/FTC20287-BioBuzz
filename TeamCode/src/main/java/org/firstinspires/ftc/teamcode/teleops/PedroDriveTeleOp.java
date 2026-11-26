@@ -152,7 +152,10 @@ public abstract class PedroDriveTeleOp extends BaseDriveTeleOp {
     @Override
     protected final void aimTurret(Turret turret) {
         Pose robotPose = follower.pose();
-        if (robotPose != null) {
+        if(controls.isTurretLock()){
+            turret.lockTurret();
+        }
+        else if (robotPose != null) {
             turret.aimAt(robotPose, Points.cellTarget(alliance, robotPose.y()));
         }
     }

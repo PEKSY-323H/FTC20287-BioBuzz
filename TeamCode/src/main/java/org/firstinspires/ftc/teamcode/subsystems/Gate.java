@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 @Configurable
 public final class Gate extends SubsystemBase {
     // Placeholder positions in [0, 1]; tune for the mechanism in Panels.
-    public static double OPEN_POSITION = 0.75;
+    public static double OPEN_POSITION = 0.1;
     public static double CLOSED_POSITION = 0.4;
 
     private final Servo gate;

@@ -45,7 +45,8 @@ public final class BlueCooperationDownParkAuto extends BaseAuto {
         Pose flower1 = bluePose(Blue.FLOWER_1);
         Pose park = bluePose(Blue.STOP_1);
         Path startToShoot1 = line(startPose(), shoot1);
-        Path shoot1ToFlowerPrep1 = line(shoot1, flowerPrep1);
+        Path shoot1ToFlowerPrep1 = curve(shoot1, bluePose(Blue.SHOOT_1_TO_FLOWER_PREP_1_CTRL), flowerPrep1,
+                Interpolator.linear(shoot1.heading(), flowerPrep1.heading()));
         Path flowerPrep1ToFlower1 = line(flowerPrep1, flower1,
                 Interpolator.constant(flower1.heading()));
 

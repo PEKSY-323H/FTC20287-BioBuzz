@@ -68,7 +68,7 @@ public final class RedFullAuto extends BaseAuto {
         Pose park = redPose(Red.STOP_1);
 
         Path start1ToShoot1 = line(start1, shoot1);
-        Path shoot1ToFlowerPrep1 = line(shoot1, flowerPrep1,
+        Path shoot1ToFlowerPrep1 = curve(shoot1, redPose(Red.SHOOT_1_TO_FLOWER_PREP_1_CTRL), flowerPrep1,
                 Interpolator.linear(shoot1.heading(), Math.toRadians(180)));
         Path flowerPrep1ToFlower1 = line(flowerPrep1, flower1,
                 Interpolator.constant(Math.toRadians(180)));

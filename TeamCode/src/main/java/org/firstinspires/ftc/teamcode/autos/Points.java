@@ -72,23 +72,23 @@ public final class Points {
         }
 
         // ---------- Waypoints ----------
-        public static Point START = new Point(84.60629921259843, 131.92913385826773, 270);
+        public static Point START = new Point(56.8937, 9.5709, 90);
         /** RED counterpart of the delayed BLUE parking start. */
-        public static Point START_OUTSIDE_END_ZONE = new Point(77.08661417322836, 7.204724409448819, 90);
+        public static Point START_OUTSIDE_END_ZONE = new Point(64.4134, 134.2953, 270);
         /** Starting location for the Least routine. */
         public static Point START_2 = new Point(63.46, 132.8, 90);
         // Shooting headings put the rear-facing turret toward the HIVE.
-        public static Point SHOOT_1 = new Point(78.58267716535434, 125.31496062992126, 90);
-        public static Point FLOWER_PREP_1 = new Point(115.43307086614173, 93.26771653543308, 360);
-        public static Point FLOWER_1 = new Point(125.74803149606299, 92.44094488188976, 360);
-        public static Point SHOOT_2 = new Point(81.22047244094489, 14.133858267716535, 270);
-        public static Point FLOWER_PREP_2 = new Point(91.92913385826772, 22.086614173228348, 270);
-        public static Point FLOWER_2 = new Point(92.16535433070867, 14.960629921259843, 270);
-        public static Point SHOOT_2_RETURN = new Point(79.60629921259842, 14.173228346456693, 270);
-        public static Point GARDEN_PREP = new Point(108.4251968503937, 132.24409448818898, 360);
-        public static Point GARDEN = new Point(130.5511811023622, 131.77165354330708, 360);
-        public static Point SHOOT_1_RETURN = new Point(79.88188976377953, 124.25196850393702, 90);
-        public static Point STOP_1 = new Point(131.96850393700788, 36.338582677165356, 180);
+        public static Point SHOOT_1 = new Point(62.9173, 16.185, 270);
+        public static Point FLOWER_PREP_1 = new Point(26.0669, 48.2323, 180);
+        public static Point FLOWER_1 = new Point(15.752, 49.0591, 180);
+        public static Point SHOOT_2 = new Point(60.2795, 127.3661, 90);
+        public static Point FLOWER_PREP_2 = new Point(49.5709, 119.4134, 90);
+        public static Point FLOWER_2 = new Point(49.3346, 126.5394, 90);
+        public static Point SHOOT_2_RETURN = new Point(61.8937, 127.3268, 90);
+        public static Point GARDEN_PREP = new Point(33.0748, 9.2559, 180);
+        public static Point GARDEN = new Point(10.9488, 9.7283, 180);
+        public static Point SHOOT_1_RETURN = new Point(61.6181, 17.248, 270);
+        public static Point STOP_1 = new Point(9.5315, 105.1614, 0);
         /** Parking location inside the RED LOADING ZONE. */
         public static Point STOP_2 = new Point(11, 118.66, 0);
 
@@ -103,7 +103,8 @@ public final class Points {
         /** flower1 → shoot2, first control point. */
         public static Point FLOWER_1_TO_SHOOT_2_CTRL_A = new Point(39.1075342942361, 47.42045650357433, 0);
         /** flower1 → shoot2, second control point. */
-        public static Point FLOWER_1_TO_SHOOT_2_CTRL_B = new Point(24.04969063199014, 117.33626336084433, 0);
+        // Moved left from (24.05, 117.34) so the robot's corner clears the HIVE by ~5 in.
+        public static Point FLOWER_1_TO_SHOOT_2_CTRL_B = new Point(9.0, 117.0, 0);
         /** flower2 → shoot2Return. */
         public static Point FLOWER_2_TO_SHOOT_2_CTRL = new Point(48.23847961425781, 107.75913565499441, 0);
         /** shoot1 → gardenPrep, from RedCooperationDown.pp.json. */
@@ -111,7 +112,10 @@ public final class Points {
         /** shoot2Return → gardenPrep. */
         public static Point SHOOT_2_TO_GARDEN_PREP_CTRL = new Point(25.469588630544294, 125.11931435878847, 0);
         /** shoot1Return → stop1. */
-        public static Point SHOOT_1_TO_STOP_1_CTRL = new Point(32.019441483516886, 20.86708279351004, 0);
+        // Moved down-left from (32.02, 20.87) so the robot clears the HIVE by ~5 in.
+        public static Point SHOOT_1_TO_STOP_1_CTRL = new Point(28.0, 12.0, 0);
+        /** shoot1 → flowerPrep1: bows the path away from the HIVE corner (~5 in clearance). */
+        public static Point SHOOT_1_TO_FLOWER_PREP_1_CTRL = new Point(32.5, 36.0, 0);
     }
 
     /** Derived BLUE points. Edit Red in Panels; every read uses its latest values. */
@@ -143,5 +147,6 @@ public final class Points {
         public static final PoseSource SHOOT_1_TO_GARDEN_PREP_CTRL = blue(() -> Red.SHOOT_1_TO_GARDEN_PREP_CTRL);
         public static final PoseSource SHOOT_2_TO_GARDEN_PREP_CTRL = blue(() -> Red.SHOOT_2_TO_GARDEN_PREP_CTRL);
         public static final PoseSource SHOOT_1_TO_STOP_1_CTRL = blue(() -> Red.SHOOT_1_TO_STOP_1_CTRL);
+        public static final PoseSource SHOOT_1_TO_FLOWER_PREP_1_CTRL = blue(() -> Red.SHOOT_1_TO_FLOWER_PREP_1_CTRL);
     }
 }
